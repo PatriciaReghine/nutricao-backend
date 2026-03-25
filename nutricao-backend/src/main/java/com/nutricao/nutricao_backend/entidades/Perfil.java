@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -16,6 +17,9 @@ public class Perfil implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome_perfil;
+
+    @OneToMany(mappedBy = "perfil")
+    private List<Usuario> usuarios;
 
     public Perfil(){}
 
@@ -32,6 +36,14 @@ public class Perfil implements Serializable {
         this.id = id;
     }
 
+    public List<Usuario> getUsuarios() {
+        return usuarios;
+    }
+
+    public void setUsuarios(List<Usuario> usuarios) {
+        this.usuarios = usuarios;
+    }
+
     public String getNome_perfil() {
         return nome_perfil;
     }
@@ -44,11 +56,11 @@ public class Perfil implements Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Perfil perfil = (Perfil) o;
-        return Objects.equals(id, perfil.id) && Objects.equals(nome_perfil, perfil.nome_perfil);
+        return Objects.equals(id, perfil.id) && Objects.equals(nome_perfil, perfil.nome_perfil) && Objects.equals(usuarios, perfil.usuarios);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nome_perfil);
+        return Objects.hash(id, nome_perfil, usuarios);
     }
 }

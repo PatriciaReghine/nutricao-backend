@@ -17,6 +17,14 @@ public class ItensAgenda implements Serializable {
     private Long id;
     private LocalTime horario_agenda;
 
+    @ManyToOne
+    @JoinColumn(name = "id_agenda")
+    private Agenda agenda;
+
+    @ManyToOne
+    @JoinColumn(name = "id_paciente")
+    private Paciente paciente;
+
     public ItensAgenda(){}
 
     public ItensAgenda( Long id, LocalTime horario_agenda){
@@ -32,6 +40,22 @@ public class ItensAgenda implements Serializable {
         this.id = id;
     }
 
+    public Paciente getPaciente() {
+        return paciente;
+    }
+
+    public void setPaciente(Paciente paciente) {
+        this.paciente = paciente;
+    }
+
+    public Agenda getAgenda() {
+        return agenda;
+    }
+
+    public void setAgenda(Agenda agenda) {
+        this.agenda = agenda;
+    }
+
     public LocalTime getHorario_agenda() {
         return horario_agenda;
     }
@@ -44,11 +68,11 @@ public class ItensAgenda implements Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         ItensAgenda that = (ItensAgenda) o;
-        return Objects.equals(id, that.id) && Objects.equals(horario_agenda, that.horario_agenda);
+        return Objects.equals(id, that.id) && Objects.equals(horario_agenda, that.horario_agenda) && Objects.equals(agenda, that.agenda) && Objects.equals(paciente, that.paciente);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, horario_agenda);
+        return Objects.hash(id, horario_agenda, agenda, paciente);
     }
 }

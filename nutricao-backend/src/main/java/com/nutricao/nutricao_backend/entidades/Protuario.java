@@ -20,6 +20,17 @@ public class Protuario implements Serializable {
     private String restricao_alimentar;
     private String condicoes_alimentares;
 
+    @ManyToOne
+    @JoinColumn(name = "id_usuario")
+    private Usuario usuario;
+
+    @OneToOne
+    @JoinColumn(name = "id_paciente")
+    private Paciente paciente;
+
+    @OneToOne(mappedBy = "prontuario")
+    private AvaliacaoFisica avaliacaoFisica;
+
     public Protuario(){}
 
     public Protuario(Long id, String numero_prontuario, String objetivo, String restricao_alimentar, String condicoes_alimentares){
@@ -32,13 +43,36 @@ public class Protuario implements Serializable {
 
     }
 
-
-    public String getRestricao_alimentar() {
-        return restricao_alimentar;
+    public Long getId() {
+        return id;
     }
 
-    public void setRestricao_alimentar(String restricao_alimentar) {
-        this.restricao_alimentar = restricao_alimentar;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public AvaliacaoFisica getAvaliacaoFisica() {
+        return avaliacaoFisica;
+    }
+
+    public void setAvaliacaoFisica(AvaliacaoFisica avaliacaoFisica) {
+        this.avaliacaoFisica = avaliacaoFisica;
+    }
+
+    public Paciente getPaciente() {
+        return paciente;
+    }
+
+    public void setPaciente(Paciente paciente) {
+        this.paciente = paciente;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public String getCondicoes_alimentares() {
@@ -47,6 +81,14 @@ public class Protuario implements Serializable {
 
     public void setCondicoes_alimentares(String condicoes_alimentares) {
         this.condicoes_alimentares = condicoes_alimentares;
+    }
+
+    public String getRestricao_alimentar() {
+        return restricao_alimentar;
+    }
+
+    public void setRestricao_alimentar(String restricao_alimentar) {
+        this.restricao_alimentar = restricao_alimentar;
     }
 
     public String getObjetivo() {
@@ -65,23 +107,15 @@ public class Protuario implements Serializable {
         this.numero_prontuario = numero_prontuario;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Protuario protuario = (Protuario) o;
-        return Objects.equals(id, protuario.id) && Objects.equals(numero_prontuario, protuario.numero_prontuario) && Objects.equals(objetivo, protuario.objetivo) && Objects.equals(restricao_alimentar, protuario.restricao_alimentar) && Objects.equals(condicoes_alimentares, protuario.condicoes_alimentares);
+        return Objects.equals(id, protuario.id) && Objects.equals(numero_prontuario, protuario.numero_prontuario) && Objects.equals(objetivo, protuario.objetivo) && Objects.equals(restricao_alimentar, protuario.restricao_alimentar) && Objects.equals(condicoes_alimentares, protuario.condicoes_alimentares) && Objects.equals(usuario, protuario.usuario) && Objects.equals(paciente, protuario.paciente) && Objects.equals(avaliacaoFisica, protuario.avaliacaoFisica);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, numero_prontuario, objetivo, restricao_alimentar, condicoes_alimentares);
+        return Objects.hash(id, numero_prontuario, objetivo, restricao_alimentar, condicoes_alimentares, usuario, paciente, avaliacaoFisica);
     }
 }

@@ -26,6 +26,10 @@ public class AvaliacaoFisica implements Serializable {
     private Date data_inicio;
     private Date data_final;
 
+    @OneToOne
+    @JoinColumn(name = "id_prontuario")
+    private Protuario prontuario;
+
     public AvaliacaoFisica(){}
 
     public AvaliacaoFisica( Long id, DecimalFormat peso, DecimalFormat altura, DecimalFormat imc, DecimalFormat circunferencia_abdominal, DecimalFormat circunferencia_quadril, String planejamento_alimentar, Date data_final, Date data_inicio){
@@ -48,60 +52,12 @@ public class AvaliacaoFisica implements Serializable {
         this.id = id;
     }
 
-    public DecimalFormat getPeso() {
-        return peso;
+    public Protuario getProntuario() {
+        return prontuario;
     }
 
-    public void setPeso(DecimalFormat peso) {
-        this.peso = peso;
-    }
-
-    public DecimalFormat getAltura() {
-        return altura;
-    }
-
-    public void setAltura(DecimalFormat altura) {
-        this.altura = altura;
-    }
-
-    public DecimalFormat getImc() {
-        return imc;
-    }
-
-    public void setImc(DecimalFormat imc) {
-        this.imc = imc;
-    }
-
-    public DecimalFormat getCircunferencia_abdominal() {
-        return circunferencia_abdominal;
-    }
-
-    public void setCircunferencia_abdominal(DecimalFormat circunferencia_abdominal) {
-        this.circunferencia_abdominal = circunferencia_abdominal;
-    }
-
-    public DecimalFormat getCircunferencia_quadril() {
-        return circunferencia_quadril;
-    }
-
-    public void setCircunferencia_quadril(DecimalFormat circunferencia_quadril) {
-        this.circunferencia_quadril = circunferencia_quadril;
-    }
-
-    public String getPlanejamento_alimentar() {
-        return planejamento_alimentar;
-    }
-
-    public void setPlanejamento_alimentar(String planejamento_alimentar) {
-        this.planejamento_alimentar = planejamento_alimentar;
-    }
-
-    public Date getData_inicio() {
-        return data_inicio;
-    }
-
-    public void setData_inicio(Date data_inicio) {
-        this.data_inicio = data_inicio;
+    public void setProntuario(Protuario prontuario) {
+        this.prontuario = prontuario;
     }
 
     public Date getData_final() {
@@ -112,15 +68,71 @@ public class AvaliacaoFisica implements Serializable {
         this.data_final = data_final;
     }
 
+    public Date getData_inicio() {
+        return data_inicio;
+    }
+
+    public void setData_inicio(Date data_inicio) {
+        this.data_inicio = data_inicio;
+    }
+
+    public String getPlanejamento_alimentar() {
+        return planejamento_alimentar;
+    }
+
+    public void setPlanejamento_alimentar(String planejamento_alimentar) {
+        this.planejamento_alimentar = planejamento_alimentar;
+    }
+
+    public DecimalFormat getCircunferencia_quadril() {
+        return circunferencia_quadril;
+    }
+
+    public void setCircunferencia_quadril(DecimalFormat circunferencia_quadril) {
+        this.circunferencia_quadril = circunferencia_quadril;
+    }
+
+    public DecimalFormat getCircunferencia_abdominal() {
+        return circunferencia_abdominal;
+    }
+
+    public void setCircunferencia_abdominal(DecimalFormat circunferencia_abdominal) {
+        this.circunferencia_abdominal = circunferencia_abdominal;
+    }
+
+    public DecimalFormat getImc() {
+        return imc;
+    }
+
+    public void setImc(DecimalFormat imc) {
+        this.imc = imc;
+    }
+
+    public DecimalFormat getAltura() {
+        return altura;
+    }
+
+    public void setAltura(DecimalFormat altura) {
+        this.altura = altura;
+    }
+
+    public DecimalFormat getPeso() {
+        return peso;
+    }
+
+    public void setPeso(DecimalFormat peso) {
+        this.peso = peso;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         AvaliacaoFisica that = (AvaliacaoFisica) o;
-        return Objects.equals(id, that.id) && Objects.equals(peso, that.peso) && Objects.equals(altura, that.altura) && Objects.equals(imc, that.imc) && Objects.equals(circunferencia_abdominal, that.circunferencia_abdominal) && Objects.equals(circunferencia_quadril, that.circunferencia_quadril) && Objects.equals(planejamento_alimentar, that.planejamento_alimentar) && Objects.equals(data_inicio, that.data_inicio) && Objects.equals(data_final, that.data_final);
+        return Objects.equals(id, that.id) && Objects.equals(peso, that.peso) && Objects.equals(altura, that.altura) && Objects.equals(imc, that.imc) && Objects.equals(circunferencia_abdominal, that.circunferencia_abdominal) && Objects.equals(circunferencia_quadril, that.circunferencia_quadril) && Objects.equals(planejamento_alimentar, that.planejamento_alimentar) && Objects.equals(data_inicio, that.data_inicio) && Objects.equals(data_final, that.data_final) && Objects.equals(prontuario, that.prontuario);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, peso, altura, imc, circunferencia_abdominal, circunferencia_quadril, planejamento_alimentar, data_inicio, data_final);
+        return Objects.hash(id, peso, altura, imc, circunferencia_abdominal, circunferencia_quadril, planejamento_alimentar, data_inicio, data_final, prontuario);
     }
 }

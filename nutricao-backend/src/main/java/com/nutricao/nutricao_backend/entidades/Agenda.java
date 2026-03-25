@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -16,6 +17,13 @@ public class Agenda implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY )
     private Long id;
     private Date dia_semana;
+
+    @ManyToOne
+    @JoinColumn(name = "id_usuario")
+    private Usuario usuario;
+
+    @OneToMany(mappedBy = "agenda")
+    private List<ItensAgenda> itens;
 
     public Agenda(){}
 
@@ -30,6 +38,22 @@ public class Agenda implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public List<ItensAgenda> getItens() {
+        return itens;
+    }
+
+    public void setItens(List<ItensAgenda> itens) {
+        this.itens = itens;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public Date getDia_semana() {

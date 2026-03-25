@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -16,6 +17,9 @@ public class Cidade implements Serializable {
     private Long id;
     private String nome;
     private String uf;
+
+    @OneToMany(mappedBy = "cidade")
+    private List<Paciente> pacientes;
 
     public Cidade(){}
 
@@ -33,14 +37,6 @@ public class Cidade implements Serializable {
         this.id = id;
     }
 
-    public String getUf() {
-        return uf;
-    }
-
-    public void setUf(String uf) {
-        this.uf = uf;
-    }
-
     public String getNome() {
         return nome;
     }
@@ -49,15 +45,31 @@ public class Cidade implements Serializable {
         this.nome = nome;
     }
 
+    public String getUf() {
+        return uf;
+    }
+
+    public void setUf(String uf) {
+        this.uf = uf;
+    }
+
+    public List<Paciente> getPacientes() {
+        return pacientes;
+    }
+
+    public void setPacientes(List<Paciente> pacientes) {
+        this.pacientes = pacientes;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Cidade cidade = (Cidade) o;
-        return Objects.equals(id, cidade.id) && Objects.equals(nome, cidade.nome) && Objects.equals(uf, cidade.uf);
+        return Objects.equals(id, cidade.id) && Objects.equals(nome, cidade.nome) && Objects.equals(uf, cidade.uf) && Objects.equals(pacientes, cidade.pacientes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nome, uf);
+        return Objects.hash(id, nome, uf, pacientes);
     }
 }

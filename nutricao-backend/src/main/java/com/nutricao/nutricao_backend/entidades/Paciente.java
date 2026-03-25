@@ -6,6 +6,7 @@ import lombok.Data;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -26,6 +27,16 @@ public class Paciente implements Serializable {
     private String bairro;
     private Integer numero;
     private String cep;
+
+    @OneToOne(mappedBy = "paciente")
+    private Protuario prontuario;
+
+    @OneToMany(mappedBy = "paciente")
+    private List<ItensAgenda> agendamentos;
+
+    @ManyToOne
+    @JoinColumn(name = "id_cidade")
+    private Cidade cidade;
 
     public Paciente(){}
 
@@ -53,6 +64,30 @@ public class Paciente implements Serializable {
         this.id = id;
     }
 
+    public Cidade getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(Cidade cidade) {
+        this.cidade = cidade;
+    }
+
+    public List<ItensAgenda> getAgendamentos() {
+        return agendamentos;
+    }
+
+    public void setAgendamentos(List<ItensAgenda> agendamentos) {
+        this.agendamentos = agendamentos;
+    }
+
+    public Protuario getProntuario() {
+        return prontuario;
+    }
+
+    public void setProntuario(Protuario prontuario) {
+        this.prontuario = prontuario;
+    }
+
     public String getCep() {
         return cep;
     }
@@ -77,20 +112,20 @@ public class Paciente implements Serializable {
         this.bairro = bairro;
     }
 
-    public Date getData_cadastro() {
-        return data_cadastro;
-    }
-
-    public void setData_cadastro(Date data_cadastro) {
-        this.data_cadastro = data_cadastro;
-    }
-
     public String getGenero() {
         return genero;
     }
 
     public void setGenero(String genero) {
         this.genero = genero;
+    }
+
+    public Date getData_cadastro() {
+        return data_cadastro;
+    }
+
+    public void setData_cadastro(Date data_cadastro) {
+        this.data_cadastro = data_cadastro;
     }
 
     public String getEmail() {
@@ -137,12 +172,12 @@ public class Paciente implements Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Paciente paciente = (Paciente) o;
-        return Objects.equals(id, paciente.id) && Objects.equals(nome, paciente.nome) && Objects.equals(cpf, paciente.cpf) && Objects.equals(endereco, paciente.endereco) && Objects.equals(data_nascimento, paciente.data_nascimento) && Objects.equals(email, paciente.email) && Objects.equals(data_cadastro, paciente.data_cadastro) && Objects.equals(genero, paciente.genero) && Objects.equals(bairro, paciente.bairro) && Objects.equals(numero, paciente.numero) && Objects.equals(cep, paciente.cep);
+        return Objects.equals(id, paciente.id) && Objects.equals(nome, paciente.nome) && Objects.equals(cpf, paciente.cpf) && Objects.equals(endereco, paciente.endereco) && Objects.equals(data_nascimento, paciente.data_nascimento) && Objects.equals(email, paciente.email) && Objects.equals(data_cadastro, paciente.data_cadastro) && Objects.equals(genero, paciente.genero) && Objects.equals(bairro, paciente.bairro) && Objects.equals(numero, paciente.numero) && Objects.equals(cep, paciente.cep) && Objects.equals(prontuario, paciente.prontuario) && Objects.equals(agendamentos, paciente.agendamentos) && Objects.equals(cidade, paciente.cidade);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nome, cpf, endereco, data_nascimento, email, data_cadastro, genero, bairro, numero, cep);
+        return Objects.hash(id, nome, cpf, endereco, data_nascimento, email, data_cadastro, genero, bairro, numero, cep, prontuario, agendamentos, cidade);
     }
 }
 
