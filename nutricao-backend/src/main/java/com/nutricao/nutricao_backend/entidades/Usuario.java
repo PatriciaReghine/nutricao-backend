@@ -23,7 +23,6 @@ public class Usuario implements Serializable {
     private String crn;
     private String assinatura;
     private String especialidade;
-
     @ManyToOne
     @JoinColumn(name = "id_perfil")
     private Perfil perfil;
