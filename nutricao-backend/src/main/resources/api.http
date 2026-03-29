@@ -1,0 +1,14 @@
+### CRIAR USUÁRIO NOVO
+POST http://localhost:8081/usuario
+Content-Type: application/json
+
+{
+  "nome": "Patricia Teste",
+  "email": "patricia_nova_1@email.com",
+  "telefone": "43996101563",
+  "login": "patricia_login_1",
+  "senhaHash": "654321",
+  "crn": "12369",
+  "especialidade": "Nutricionista",
+  "perfil": { "id": 1 }
+}

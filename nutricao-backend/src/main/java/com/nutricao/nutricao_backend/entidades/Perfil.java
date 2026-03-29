@@ -1,5 +1,6 @@
 package com.nutricao.nutricao_backend.entidades;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serial;
@@ -18,6 +19,7 @@ public class Perfil implements Serializable {
     private Long id;
     private String nome_perfil;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "perfil")
     private List<Usuario> usuarios;
 

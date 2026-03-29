@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/perfil")
-
+@RequestMapping(value = "/perfil") // Adicione esta linha!
 public class PerfilResource {
 
     @Autowired

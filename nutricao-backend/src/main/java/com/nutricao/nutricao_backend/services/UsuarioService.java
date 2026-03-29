@@ -20,4 +20,19 @@ public class UsuarioService {
         Optional<Usuario> objeto = usuarioRepositorie.findById(id);
         return objeto.get();
     }
+    public Usuario salvar(Usuario usuario) {
+        return usuarioRepositorie.save(usuario);
+    }
+
+    public boolean autenticar(String email, String senha){
+        Optional<Usuario> usuarioOpt = usuarioRepositorie.findByEmail(email);
+        if(usuarioOpt.isPresent()){
+            Usuario usuario = usuarioOpt.get();
+
+            if (usuario.getSenhaHash() != null && usuario.getSenhaHash().equals(senha)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
