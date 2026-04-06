@@ -1,6 +1,5 @@
 package com.nutricao.nutricao_backend.entidades;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serial;
@@ -32,11 +31,11 @@ public class Usuario implements Serializable {
     private Perfil perfil;
 
 
-    //@OneToMany(mappedBy = "usuario")
-   //private List<Protuario> prontuarios;
+    @OneToMany(mappedBy = "usuario")
+   private List<Prontuario> prontuarios;
 
-    //@OneToMany(mappedBy = "usuario")
-    //private List<Agenda> agendas;
+    @OneToMany(mappedBy = "usuario")
+    private List<Agenda> agendas;
 
     public Usuario(String login) {
         this.login = login;
@@ -128,32 +127,32 @@ public class Usuario implements Serializable {
         this.perfil = perfil;
     }
 
-    //public List<Protuario> getProntuarios() {
-//        return prontuarios;
-//    }
-//
-//    public void setProntuarios(List<Protuario> prontuarios) {
-//        this.prontuarios = prontuarios;
-//    }
-//
-//    public List<Agenda> getAgendas() {
-//        return agendas;
-//    }
-//
-//    public void setAgendas(List<Agenda> agendas) {
-//        this.agendas = agendas;
-//    }
+    public List<Prontuario> getProntuarios() {
+        return prontuarios;
+    }
+
+    public void setProntuarios(List<Prontuario> prontuarios) {
+        this.prontuarios = prontuarios;
+    }
+
+    public List<Agenda> getAgendas() {
+        return agendas;
+    }
+
+    public void setAgendas(List<Agenda> agendas) {
+        this.agendas = agendas;
+   }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Usuario usuario = (Usuario) o;
-        return Objects.equals(id, usuario.id) && Objects.equals(nome, usuario.nome) && Objects.equals(email, usuario.email) && Objects.equals(telefone, usuario.telefone) && Objects.equals(login, usuario.login) && Objects.equals(senhaHash, usuario.senhaHash) && Objects.equals(crn, usuario.crn) && Objects.equals(especialidade, usuario.especialidade) && Objects.equals(perfil, usuario.perfil);
+        return Objects.equals(id, usuario.id) && Objects.equals(nome, usuario.nome) && Objects.equals(email, usuario.email) && Objects.equals(telefone, usuario.telefone) && Objects.equals(login, usuario.login) && Objects.equals(senhaHash, usuario.senhaHash) && Objects.equals(crn, usuario.crn) && Objects.equals(especialidade, usuario.especialidade) && Objects.equals(perfil, usuario.perfil) && Objects.equals(prontuarios, usuario.prontuarios) && Objects.equals(agendas, usuario.agendas);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nome, email, telefone, login, senhaHash, crn, especialidade, perfil);
+        return Objects.hash(id, nome, email, telefone, login, senhaHash, crn, especialidade, perfil, prontuarios, agendas);
     }
 }
 

@@ -2,6 +2,7 @@ package com.nutricao.nutricao_backend.services;
 
 import com.nutricao.nutricao_backend.entidades.Usuario;
 import com.nutricao.nutricao_backend.repositories.UsuarioRepositorie;
+import com.nutricao.nutricao_backend.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,15 +25,21 @@ public class UsuarioService {
         return usuarioRepositorie.save(usuario);
     }
 
-    public boolean autenticar(String email, String senha){
+    public String autenticar(String email, String senha) {
+
         Optional<Usuario> usuarioOpt = usuarioRepositorie.findByEmail(email);
-        if(usuarioOpt.isPresent()){
+
+        if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
 
             if (usuario.getSenhaHash() != null && usuario.getSenhaHash().equals(senha)) {
-                return true;
+
+                return JwtService.gerarToken(usuario.getEmail(),
+                        usuario.getPerfil().getNome_perfil()
+                );
             }
         }
-        return false;
+
+        return null;
     }
 }

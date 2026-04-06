@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name ="prontuario")
-public class Protuario implements Serializable {
+public class Prontuario implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -31,9 +31,9 @@ public class Protuario implements Serializable {
     @OneToOne(mappedBy = "prontuario")
     private AvaliacaoFisica avaliacaoFisica;
 
-    public Protuario(){}
+    public Prontuario(){}
 
-    public Protuario(Long id, String numero_prontuario, String objetivo, String restricao_alimentar, String condicoes_alimentares){
+    public Prontuario(Long id, String numero_prontuario, String objetivo, String restricao_alimentar, String condicoes_alimentares){
         this.id = id;
         this.objetivo  = objetivo;
         this.numero_prontuario = numero_prontuario;
@@ -110,7 +110,7 @@ public class Protuario implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Protuario protuario = (Protuario) o;
+        Prontuario protuario = (Prontuario) o;
         return Objects.equals(id, protuario.id) && Objects.equals(numero_prontuario, protuario.numero_prontuario) && Objects.equals(objetivo, protuario.objetivo) && Objects.equals(restricao_alimentar, protuario.restricao_alimentar) && Objects.equals(condicoes_alimentares, protuario.condicoes_alimentares) && Objects.equals(usuario, protuario.usuario) && Objects.equals(paciente, protuario.paciente) && Objects.equals(avaliacaoFisica, protuario.avaliacaoFisica);
     }
 

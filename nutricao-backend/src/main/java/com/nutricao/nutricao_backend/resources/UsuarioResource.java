@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -28,15 +29,19 @@ public class UsuarioResource {
         return usuarioService.salvar(usuario);
     }
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDTO login) {
+    public ResponseEntity<?> login(@RequestBody LoginDTO login) {
 
-        boolean autenticado = usuarioService.autenticar(
+        String token = usuarioService.autenticar(
                 login.getEmail(),
                 login.getSenha()
         );
 
-        if (autenticado) {
-            return ResponseEntity.ok("Login realizado com sucesso");
+        if (token != null) {
+
+            return ResponseEntity.ok().body(
+                    Map.of("token", token)
+            );
+
         } else {
             return ResponseEntity.status(401).body("Email ou senha inválidos");
         }

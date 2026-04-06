@@ -28,7 +28,7 @@ public class AvaliacaoFisica implements Serializable {
 
     @OneToOne
     @JoinColumn(name = "id_prontuario")
-    private Protuario prontuario;
+    private Prontuario prontuario;
 
     public AvaliacaoFisica(){}
 
@@ -52,11 +52,11 @@ public class AvaliacaoFisica implements Serializable {
         this.id = id;
     }
 
-    public Protuario getProntuario() {
+    public Prontuario getProntuario() {
         return prontuario;
     }
 
-    public void setProntuario(Protuario prontuario) {
+    public void setProntuario(Prontuario prontuario) {
         this.prontuario = prontuario;
     }
 
