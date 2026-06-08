@@ -1,6 +1,7 @@
 package com.nutricao.nutricao_backend.entidades;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serial;
@@ -22,40 +23,48 @@ public class Paciente implements Serializable {
 
     private String nome;
     private String cpf;
-    private String endereco;
+    private String logradouro;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dataNascimento;
-
+    private String telefone;
     private String email;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dataCadastro;
+
+
 
     private String genero;
     private String bairro;
     private Integer numero;
     private String cep;
 
+    @PrePersist
+    public void prePersist() {
+        this.dataCadastro = LocalDate.now();
+    }
+
     @OneToOne(mappedBy = "paciente")
     private Prontuario prontuario;
 
     @OneToMany(mappedBy = "paciente")
+    @JsonIgnore
     private List<ItensAgenda> agendamentos;
 
     @ManyToOne
-    @JoinColumn(name = "id_cidade")
+    @JoinColumn(name = "id_cidade", nullable = true)
     private Cidade cidade;
 
     public Paciente() {
     }
 
-    public Paciente(Long id, String nome, String cpf, String endereco, LocalDate dataNascimento,
+    public Paciente(Long id, String nome, String cpf, String logradouro, LocalDate dataNascimento,
                     String email, LocalDate dataCadastro, String genero,
-                    String bairro, Integer numero, String cep) {
+                    String bairro, Integer numero, String cep, String telefone) {
 
         this.id = id;
         this.nome = nome;
         this.cpf = cpf;
-        this.endereco = endereco;
+        this.logradouro = logradouro;
         this.dataNascimento = dataNascimento;
         this.email = email;
         this.dataCadastro = dataCadastro;
@@ -63,7 +72,10 @@ public class Paciente implements Serializable {
         this.bairro = bairro;
         this.numero = numero;
         this.cep = cep;
+        this.telefone = telefone;
     }
+
+
 
     // getters e setters (mantém os seus)
 
@@ -92,12 +104,12 @@ public class Paciente implements Serializable {
         this.cpf = cpf;
     }
 
-    public String getEndereco() {
-        return endereco;
+    public String getLogradouro() {
+        return logradouro;
     }
 
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
+    public void setLogradouro(String logradouro) {
+        this.logradouro = logradouro;
     }
 
     public LocalDate getDataNascimento() {
@@ -108,6 +120,14 @@ public class Paciente implements Serializable {
         this.dataNascimento = dataNascimento;
     }
 
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -116,20 +136,20 @@ public class Paciente implements Serializable {
         this.email = email;
     }
 
-    public String getGenero() {
-        return genero;
-    }
-
-    public void setGenero(String genero) {
-        this.genero = genero;
-    }
-
     public LocalDate getDataCadastro() {
         return dataCadastro;
     }
 
     public void setDataCadastro(LocalDate dataCadastro) {
         this.dataCadastro = dataCadastro;
+    }
+
+    public String getGenero() {
+        return genero;
+    }
+
+    public void setGenero(String genero) {
+        this.genero = genero;
     }
 
     public String getBairro() {
@@ -148,6 +168,14 @@ public class Paciente implements Serializable {
         this.numero = numero;
     }
 
+    public Prontuario getProntuario() {
+        return prontuario;
+    }
+
+    public void setProntuario(Prontuario prontuario) {
+        this.prontuario = prontuario;
+    }
+
     public String getCep() {
         return cep;
     }
@@ -164,14 +192,6 @@ public class Paciente implements Serializable {
         this.agendamentos = agendamentos;
     }
 
-    public Prontuario getProntuario() {
-        return prontuario;
-    }
-
-    public void setProntuario(Prontuario prontuario) {
-        this.prontuario = prontuario;
-    }
-
     public Cidade getCidade() {
         return cidade;
     }
@@ -184,11 +204,11 @@ public class Paciente implements Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Paciente paciente = (Paciente) o;
-        return Objects.equals(id, paciente.id) && Objects.equals(nome, paciente.nome) && Objects.equals(cpf, paciente.cpf) && Objects.equals(endereco, paciente.endereco) && Objects.equals(dataNascimento, paciente.dataNascimento) && Objects.equals(email, paciente.email) && Objects.equals(dataCadastro, paciente.dataCadastro) && Objects.equals(genero, paciente.genero) && Objects.equals(bairro, paciente.bairro) && Objects.equals(numero, paciente.numero) && Objects.equals(cep, paciente.cep) && Objects.equals(prontuario, paciente.prontuario) && Objects.equals(agendamentos, paciente.agendamentos) && Objects.equals(cidade, paciente.cidade);
+        return Objects.equals(id, paciente.id) && Objects.equals(nome, paciente.nome) && Objects.equals(cpf, paciente.cpf) && Objects.equals(logradouro, paciente.logradouro) && Objects.equals(dataNascimento, paciente.dataNascimento) && Objects.equals(telefone, paciente.telefone) && Objects.equals(email, paciente.email) && Objects.equals(dataCadastro, paciente.dataCadastro) && Objects.equals(genero, paciente.genero) && Objects.equals(bairro, paciente.bairro) && Objects.equals(numero, paciente.numero) && Objects.equals(cep, paciente.cep) && Objects.equals(prontuario, paciente.prontuario) && Objects.equals(agendamentos, paciente.agendamentos) && Objects.equals(cidade, paciente.cidade);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nome, cpf, endereco, dataNascimento, email, dataCadastro, genero, bairro, numero, cep, prontuario, agendamentos, cidade);
+        return Objects.hash(id, nome, cpf, logradouro, dataNascimento, telefone, email, dataCadastro, genero, bairro, numero, cep, prontuario, agendamentos, cidade);
     }
 }

@@ -1,5 +1,6 @@
 package com.nutricao.nutricao_backend.entidades;
 
+import com.nutricao.nutricao_backend.enums.StatusConsulta;
 import jakarta.persistence.*;
 
 import java.io.Serial;
@@ -13,9 +14,13 @@ public class ItensAgenda implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalTime horario_agenda;
+    private LocalTime horario;
+
+    @Enumerated(EnumType.STRING)
+    private StatusConsulta statusConsulta;
+
 
     @ManyToOne
     @JoinColumn(name = "id_agenda")
@@ -25,12 +30,19 @@ public class ItensAgenda implements Serializable {
     @JoinColumn(name = "id_paciente")
     private Paciente paciente;
 
-    public ItensAgenda(){}
+    @OneToOne(mappedBy = "itemAgenda")
+    private Consulta consulta;
 
-    public ItensAgenda( Long id, LocalTime horario_agenda){
-        this.id = id;
-        this.horario_agenda = horario_agenda;
+
+    public ItensAgenda() {
     }
+
+    public ItensAgenda(Long id, LocalTime horario, StatusConsulta statusConsulta) {
+        this.id = id;
+        this.horario = horario;
+        this.statusConsulta = statusConsulta;
+    }
+
 
     public Long getId() {
         return id;
@@ -40,12 +52,20 @@ public class ItensAgenda implements Serializable {
         this.id = id;
     }
 
-    public Paciente getPaciente() {
-        return paciente;
+    public LocalTime getHorario() {
+        return horario;
     }
 
-    public void setPaciente(Paciente paciente) {
-        this.paciente = paciente;
+    public void setHorario(LocalTime horario) {
+        this.horario = horario;
+    }
+
+    public StatusConsulta getStatusConsulta() {
+        return statusConsulta;
+    }
+
+    public void setStatusConsulta(StatusConsulta statusConsulta) {
+        this.statusConsulta = statusConsulta;
     }
 
     public Agenda getAgenda() {
@@ -56,23 +76,31 @@ public class ItensAgenda implements Serializable {
         this.agenda = agenda;
     }
 
-    public LocalTime getHorario_agenda() {
-        return horario_agenda;
+    public Paciente getPaciente() {
+        return paciente;
     }
 
-    public void setHorario_agenda(LocalTime horario_agenda) {
-        this.horario_agenda = horario_agenda;
+    public void setPaciente(Paciente paciente) {
+        this.paciente = paciente;
+    }
+
+    public Consulta getConsulta() {
+        return consulta;
+    }
+
+    public void setConsulta(Consulta consulta) {
+        this.consulta = consulta;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         ItensAgenda that = (ItensAgenda) o;
-        return Objects.equals(id, that.id) && Objects.equals(horario_agenda, that.horario_agenda) && Objects.equals(agenda, that.agenda) && Objects.equals(paciente, that.paciente);
+        return Objects.equals(id, that.id) && Objects.equals(horario, that.horario) && statusConsulta == that.statusConsulta && Objects.equals(agenda, that.agenda) && Objects.equals(paciente, that.paciente) && Objects.equals(consulta, that.consulta);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, horario_agenda, agenda, paciente);
+        return Objects.hash(id, horario, statusConsulta, agenda, paciente, consulta);
     }
 }

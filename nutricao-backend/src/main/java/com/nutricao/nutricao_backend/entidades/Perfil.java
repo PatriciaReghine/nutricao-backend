@@ -17,7 +17,7 @@ public class Perfil implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nome_perfil;
+    private String nomePerfil;
 
     @JsonIgnore
     @OneToMany(mappedBy = "perfil")
@@ -25,9 +25,9 @@ public class Perfil implements Serializable {
 
     public Perfil(){}
 
-    public Perfil (Long id, String nome_perfil){
+    public Perfil (Long id, String nomePerfil){
         this.id = id;
-        this.nome_perfil = nome_perfil;
+        this.nomePerfil = nomePerfil;
     }
 
     public Long getId() {
@@ -38,6 +38,14 @@ public class Perfil implements Serializable {
         this.id = id;
     }
 
+    public String getNomePerfil() {
+        return nomePerfil;
+    }
+
+    public void setNomePerfil(String nomePerfil) {
+        this.nomePerfil = nomePerfil;
+    }
+
     public List<Usuario> getUsuarios() {
         return usuarios;
     }
@@ -46,23 +54,15 @@ public class Perfil implements Serializable {
         this.usuarios = usuarios;
     }
 
-    public String getNome_perfil() {
-        return nome_perfil;
-    }
-
-    public void setNome_perfil(String nome_perfil) {
-        this.nome_perfil = nome_perfil;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Perfil perfil = (Perfil) o;
-        return Objects.equals(id, perfil.id) && Objects.equals(nome_perfil, perfil.nome_perfil) && Objects.equals(usuarios, perfil.usuarios);
+        return Objects.equals(id, perfil.id) && Objects.equals(nomePerfil, perfil.nomePerfil) && Objects.equals(usuarios, perfil.usuarios);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nome_perfil, usuarios);
+        return Objects.hash(id, nomePerfil, usuarios);
     }
 }

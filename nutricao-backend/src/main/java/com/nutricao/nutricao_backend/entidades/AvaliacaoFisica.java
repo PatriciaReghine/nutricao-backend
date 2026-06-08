@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 
@@ -15,33 +16,38 @@ public class AvaliacaoFisica implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private DecimalFormat peso;
-    private DecimalFormat altura;
-    private DecimalFormat imc;
-    private DecimalFormat circunferencia_abdominal;
-    private DecimalFormat circunferencia_quadril;
-    private String planejamento_alimentar;
-    private Date data_inicio;
-    private Date data_final;
+    private Double peso;
+    private Double altura;
+    private Double imc;
+    private Double circunferenciaAbdominal;
+    private Double circunferenciaQuadril;
 
-    @OneToOne
+    @Column(columnDefinition = "TEXT")
+    private String planejamentoAlimentar;
+    private Double percentualGordura;
+
+    @ManyToOne
     @JoinColumn(name = "id_prontuario")
     private Prontuario prontuario;
 
-    public AvaliacaoFisica(){}
+    @OneToOne(mappedBy = "avaliacaoFisica")
+    private Consulta consulta;
 
-    public AvaliacaoFisica( Long id, DecimalFormat peso, DecimalFormat altura, DecimalFormat imc, DecimalFormat circunferencia_abdominal, DecimalFormat circunferencia_quadril, String planejamento_alimentar, Date data_final, Date data_inicio){
+
+    public AvaliacaoFisica() {
+    }
+
+    public AvaliacaoFisica(Long id, Double peso, Double altura, Double imc, Double circunferenciaAbdominal, Double circunferenciaQuadril, String planejamentoAlimentar, LocalDate dataFinal, LocalDate dataInicio, Double percentualGordura) {
         this.id = id;
         this.peso = peso;
         this.altura = altura;
         this.imc = imc;
-        this.circunferencia_abdominal = circunferencia_abdominal;
-        this.circunferencia_quadril = circunferencia_quadril;
-        this.planejamento_alimentar = planejamento_alimentar;
-        this.data_final = data_final;
-        this.data_inicio = data_inicio;
+        this.circunferenciaAbdominal = circunferenciaAbdominal;
+        this.circunferenciaQuadril = circunferenciaQuadril;
+        this.planejamentoAlimentar = planejamentoAlimentar;
+        this.percentualGordura = percentualGordura;
     }
 
     public Long getId() {
@@ -52,6 +58,62 @@ public class AvaliacaoFisica implements Serializable {
         this.id = id;
     }
 
+    public Double getPeso() {
+        return peso;
+    }
+
+    public void setPeso(Double peso) {
+        this.peso = peso;
+    }
+
+    public Double getAltura() {
+        return altura;
+    }
+
+    public void setAltura(Double altura) {
+        this.altura = altura;
+    }
+
+    public Double getImc() {
+        return imc;
+    }
+
+    public void setImc(Double imc) {
+        this.imc = imc;
+    }
+
+    public Double getCircunferenciaAbdominal() {
+        return circunferenciaAbdominal;
+    }
+
+    public void setCircunferenciaAbdominal(Double circunferenciaAbdominal) {
+        this.circunferenciaAbdominal = circunferenciaAbdominal;
+    }
+
+    public Double getCircunferenciaQuadril() {
+        return circunferenciaQuadril;
+    }
+
+    public void setCircunferenciaQuadril(Double circunferenciaQuadril) {
+        this.circunferenciaQuadril = circunferenciaQuadril;
+    }
+
+    public String getPlanejamentoAlimentar() {
+        return planejamentoAlimentar;
+    }
+
+    public void setPlanejamentoAlimentar(String planejamentoAlimentar) {
+        this.planejamentoAlimentar = planejamentoAlimentar;
+    }
+
+    public Double getPercentualGordura() {
+        return percentualGordura;
+    }
+
+    public void setPercentualGordura(Double percentualGordura) {
+        this.percentualGordura = percentualGordura;
+    }
+
     public Prontuario getProntuario() {
         return prontuario;
     }
@@ -60,79 +122,23 @@ public class AvaliacaoFisica implements Serializable {
         this.prontuario = prontuario;
     }
 
-    public Date getData_final() {
-        return data_final;
+    public Consulta getConsulta() {
+        return consulta;
     }
 
-    public void setData_final(Date data_final) {
-        this.data_final = data_final;
-    }
-
-    public Date getData_inicio() {
-        return data_inicio;
-    }
-
-    public void setData_inicio(Date data_inicio) {
-        this.data_inicio = data_inicio;
-    }
-
-    public String getPlanejamento_alimentar() {
-        return planejamento_alimentar;
-    }
-
-    public void setPlanejamento_alimentar(String planejamento_alimentar) {
-        this.planejamento_alimentar = planejamento_alimentar;
-    }
-
-    public DecimalFormat getCircunferencia_quadril() {
-        return circunferencia_quadril;
-    }
-
-    public void setCircunferencia_quadril(DecimalFormat circunferencia_quadril) {
-        this.circunferencia_quadril = circunferencia_quadril;
-    }
-
-    public DecimalFormat getCircunferencia_abdominal() {
-        return circunferencia_abdominal;
-    }
-
-    public void setCircunferencia_abdominal(DecimalFormat circunferencia_abdominal) {
-        this.circunferencia_abdominal = circunferencia_abdominal;
-    }
-
-    public DecimalFormat getImc() {
-        return imc;
-    }
-
-    public void setImc(DecimalFormat imc) {
-        this.imc = imc;
-    }
-
-    public DecimalFormat getAltura() {
-        return altura;
-    }
-
-    public void setAltura(DecimalFormat altura) {
-        this.altura = altura;
-    }
-
-    public DecimalFormat getPeso() {
-        return peso;
-    }
-
-    public void setPeso(DecimalFormat peso) {
-        this.peso = peso;
+    public void setConsulta(Consulta consulta) {
+        this.consulta = consulta;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         AvaliacaoFisica that = (AvaliacaoFisica) o;
-        return Objects.equals(id, that.id) && Objects.equals(peso, that.peso) && Objects.equals(altura, that.altura) && Objects.equals(imc, that.imc) && Objects.equals(circunferencia_abdominal, that.circunferencia_abdominal) && Objects.equals(circunferencia_quadril, that.circunferencia_quadril) && Objects.equals(planejamento_alimentar, that.planejamento_alimentar) && Objects.equals(data_inicio, that.data_inicio) && Objects.equals(data_final, that.data_final) && Objects.equals(prontuario, that.prontuario);
+        return Objects.equals(id, that.id) && Objects.equals(peso, that.peso) && Objects.equals(altura, that.altura) && Objects.equals(imc, that.imc) && Objects.equals(circunferenciaAbdominal, that.circunferenciaAbdominal) && Objects.equals(circunferenciaQuadril, that.circunferenciaQuadril) && Objects.equals(planejamentoAlimentar, that.planejamentoAlimentar) && Objects.equals(percentualGordura, that.percentualGordura) && Objects.equals(prontuario, that.prontuario) && Objects.equals(consulta, that.consulta);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, peso, altura, imc, circunferencia_abdominal, circunferencia_quadril, planejamento_alimentar, data_inicio, data_final, prontuario);
+        return Objects.hash(id, peso, altura, imc, circunferenciaAbdominal, circunferenciaQuadril, planejamentoAlimentar, percentualGordura, prontuario, consulta);
     }
 }

@@ -1,13 +1,17 @@
 package com.nutricao.nutricao_backend.security;
 
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -17,54 +21,57 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        String uri = request.getRequestURI();
-        String method = request.getMethod();
-
-        // ROTAS PÚBLICAS
-        if (uri.equals("/usuario/login") ||
-                (uri.equals("/usuario") && method.equals("POST"))) {
-
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         String header = request.getHeader("Authorization");
 
-        // BLOQUEIA SE NÃO TIVER TOKEN
-        if (header == null || !header.startsWith("Bearer ")) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-
-        String token = header.replace("Bearer ", "");
+        System.out.println("===== JWT FILTER =====");
+        System.out.println("URL: " + request.getRequestURI());
+        System.out.println("METHOD: " + request.getMethod());
+        System.out.println("HEADER: " + header);
 
         try {
-            Claims claims = JwtService.validarTokenCompleto(token);
+            if (header != null && header.startsWith("Bearer ")) {
 
-            //  PEGA DADOS DO TOKEN CORRETAMENTE
-            String email = claims.getSubject();
-            String perfil = claims.get("perfil", String.class);
+                String token = header.substring(7);
 
-            // SALVA USUÁRIO LOGADO
-            UsuarioLogado.set(email, perfil);
+                System.out.println("TOKEN: " + token);
 
-            //  REGRAS DE ACESSO
+                boolean valido = JwtService.validarToken(token);
+                System.out.println("VALIDO? " + valido);
 
-            //  AVALIAÇÃO → só nutricionista
-            if (uri.contains("/avaliacao") && !perfil.equals("NUTRICIONISTA")) {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                return;
+                if (valido) {
+
+                    String email = JwtService.getEmail(token);
+                    String perfil = JwtService.getPerfil(token);
+
+                    System.out.println("EMAIL: " + email);
+                    System.out.println("PERFIL: " + perfil);
+
+                    SimpleGrantedAuthority authority =
+                            new SimpleGrantedAuthority("ROLE_" + perfil);
+
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    email,
+                                    null,
+                                    List.of(authority)
+                            );
+
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                    System.out.println("AUTH SETADA: " + authentication);
+
+                } else {
+                    System.out.println("TOKEN INVÁLIDO");
+                }
+
+            } else {
+                System.out.println("SEM HEADER OU FORMATO ERRADO");
             }
 
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+            System.out.println("ERRO NO JWT: " + e.getMessage());
         }
 
-        //  LIBERA SE PASSOU EM TUDO
         filterChain.doFilter(request, response);
-
-        //  LIMPA CONTEXTO
-        UsuarioLogado.clear();
     }
 }

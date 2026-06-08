@@ -1,5 +1,7 @@
 package com.nutricao.nutricao_backend.entidades;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nutricao.nutricao_backend.util.StringUtils;
 import jakarta.persistence.*;
 
 import java.io.Serial;
@@ -18,15 +20,26 @@ public class Cidade implements Serializable {
     private String nome;
     private String uf;
 
+    @Column(name = "nome_normalizado")
+    private String nomeNormalizado;
+
+    @JsonIgnore
     @OneToMany(mappedBy = "cidade")
     private List<Paciente> pacientes;
 
     public Cidade(){}
 
-    public Cidade( Long id, String nome, String uf){
+    public Cidade( Long id, String nome, String uf, String nomeNormalizado){
         this.id = id;
         this.nome = nome;
         this.uf = uf;
+        this.nomeNormalizado = nomeNormalizado;
+    }
+
+    @PrePersist
+    @PreUpdate
+    public void normalizarNome() {
+        this.nomeNormalizado = StringUtils.normalizar(this.nome);
     }
 
     public Long getId() {
@@ -53,6 +66,14 @@ public class Cidade implements Serializable {
         this.uf = uf;
     }
 
+    public String getNomeNormalizado() {
+        return nomeNormalizado;
+    }
+
+    public void setNomeNormalizado(String nomeNormalizado) {
+        this.nomeNormalizado = nomeNormalizado;
+    }
+
     public List<Paciente> getPacientes() {
         return pacientes;
     }
@@ -65,11 +86,11 @@ public class Cidade implements Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Cidade cidade = (Cidade) o;
-        return Objects.equals(id, cidade.id) && Objects.equals(nome, cidade.nome) && Objects.equals(uf, cidade.uf) && Objects.equals(pacientes, cidade.pacientes);
+        return Objects.equals(id, cidade.id) && Objects.equals(nome, cidade.nome) && Objects.equals(uf, cidade.uf) && Objects.equals(nomeNormalizado, cidade.nomeNormalizado) && Objects.equals(pacientes, cidade.pacientes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nome, uf, pacientes);
+        return Objects.hash(id, nome, uf, nomeNormalizado, pacientes);
     }
 }

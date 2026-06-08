@@ -1,5 +1,6 @@
 package com.nutricao.nutricao_backend.entidades;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serial;
@@ -23,6 +24,7 @@ public class Usuario implements Serializable {
     private String senhaHash;
     private String crn;
     private String especialidade;
+    private Boolean ativo = true;
 
     public Usuario() {}
 
@@ -32,9 +34,11 @@ public class Usuario implements Serializable {
 
 
     @OneToMany(mappedBy = "usuario")
+    @JsonIgnore
    private List<Prontuario> prontuarios;
 
     @OneToMany(mappedBy = "usuario")
+    @JsonIgnore
     private List<Agenda> agendas;
 
     public Usuario(String login) {
@@ -42,7 +46,7 @@ public class Usuario implements Serializable {
     }
 
 
-    public Usuario(Long id, String nome, String email, String telefone, String login, String senhaHash, String crn, String especialidade) {
+    public Usuario(Long id, String nome, String email, String telefone, String login, String senhaHash, String crn, String especialidade, Boolean ativo) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -51,15 +55,7 @@ public class Usuario implements Serializable {
         this.senhaHash = senhaHash;
         this.crn = crn;
         this.especialidade = especialidade;
-    }
-
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+        this.ativo = ativo;
     }
 
     public Long getId() {
@@ -78,20 +74,20 @@ public class Usuario implements Serializable {
         this.nome = nome;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getTelefone() {
         return telefone;
     }
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
-    }
-
-    public String getSenhaHash() {
-        return senhaHash;
-    }
-
-    public void setSenhaHash(String senhaHash) {
-        this.senhaHash = senhaHash;
     }
 
     public String getLogin() {
@@ -102,6 +98,14 @@ public class Usuario implements Serializable {
         this.login = login;
     }
 
+    public String getSenhaHash() {
+        return senhaHash;
+    }
+
+    public void setSenhaHash(String senhaHash) {
+        this.senhaHash = senhaHash;
+    }
+
     public String getCrn() {
         return crn;
     }
@@ -110,13 +114,20 @@ public class Usuario implements Serializable {
         this.crn = crn;
     }
 
-
     public String getEspecialidade() {
         return especialidade;
     }
 
     public void setEspecialidade(String especialidade) {
         this.especialidade = especialidade;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
     }
 
     public Perfil getPerfil() {
@@ -141,18 +152,18 @@ public class Usuario implements Serializable {
 
     public void setAgendas(List<Agenda> agendas) {
         this.agendas = agendas;
-   }
+    }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Usuario usuario = (Usuario) o;
-        return Objects.equals(id, usuario.id) && Objects.equals(nome, usuario.nome) && Objects.equals(email, usuario.email) && Objects.equals(telefone, usuario.telefone) && Objects.equals(login, usuario.login) && Objects.equals(senhaHash, usuario.senhaHash) && Objects.equals(crn, usuario.crn) && Objects.equals(especialidade, usuario.especialidade) && Objects.equals(perfil, usuario.perfil) && Objects.equals(prontuarios, usuario.prontuarios) && Objects.equals(agendas, usuario.agendas);
+        return Objects.equals(id, usuario.id) && Objects.equals(nome, usuario.nome) && Objects.equals(email, usuario.email) && Objects.equals(telefone, usuario.telefone) && Objects.equals(login, usuario.login) && Objects.equals(senhaHash, usuario.senhaHash) && Objects.equals(crn, usuario.crn) && Objects.equals(especialidade, usuario.especialidade) && Objects.equals(ativo, usuario.ativo) && Objects.equals(perfil, usuario.perfil) && Objects.equals(prontuarios, usuario.prontuarios) && Objects.equals(agendas, usuario.agendas);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nome, email, telefone, login, senhaHash, crn, especialidade, perfil, prontuarios, agendas);
+        return Objects.hash(id, nome, email, telefone, login, senhaHash, crn, especialidade, ativo, perfil, prontuarios, agendas);
     }
 }
 

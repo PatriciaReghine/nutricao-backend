@@ -1,10 +1,11 @@
 package com.nutricao.nutricao_backend.entidades;
 
+import com.nutricao.nutricao_backend.enums.StatusAgenda;
 import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,9 +15,12 @@ public class Agenda implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Date dia_semana;
+    private LocalDate data;
+
+    @Enumerated(EnumType.STRING)
+    private StatusAgenda status;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario")
@@ -25,11 +29,13 @@ public class Agenda implements Serializable {
     @OneToMany(mappedBy = "agenda")
     private List<ItensAgenda> itens;
 
-    public Agenda(){}
+    public Agenda() {
+    }
 
-    public Agenda( Long id, Date dia_semana){
+    public Agenda(Long id, LocalDate data, StatusAgenda status) {
         this.id = id;
-        this.dia_semana = dia_semana;
+        this.data = data;
+        this.status = status;
     }
 
     public Long getId() {
@@ -40,12 +46,20 @@ public class Agenda implements Serializable {
         this.id = id;
     }
 
-    public List<ItensAgenda> getItens() {
-        return itens;
+    public LocalDate getData() {
+        return data;
     }
 
-    public void setItens(List<ItensAgenda> itens) {
-        this.itens = itens;
+    public void setData(LocalDate data) {
+        this.data = data;
+    }
+
+    public StatusAgenda getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusAgenda status) {
+        this.status = status;
     }
 
     public Usuario getUsuario() {
@@ -56,23 +70,23 @@ public class Agenda implements Serializable {
         this.usuario = usuario;
     }
 
-    public Date getDia_semana() {
-        return dia_semana;
+    public List<ItensAgenda> getItens() {
+        return itens;
     }
 
-    public void setDia_semana(Date dia_semana) {
-        this.dia_semana = dia_semana;
+    public void setItens(List<ItensAgenda> itens) {
+        this.itens = itens;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Agenda agenda = (Agenda) o;
-        return Objects.equals(id, agenda.id) && Objects.equals(dia_semana, agenda.dia_semana);
+        return Objects.equals(id, agenda.id) && Objects.equals(data, agenda.data) && status == agenda.status && Objects.equals(usuario, agenda.usuario) && Objects.equals(itens, agenda.itens);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, dia_semana);
+        return Objects.hash(id, data, status, usuario, itens);
     }
 }

@@ -1,9 +1,11 @@
 package com.nutricao.nutricao_backend.entidades;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -15,10 +17,17 @@ public class Prontuario implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
     private Long id;
-    private String numero_prontuario;
+    @Column(unique = true, nullable = false)
+    private String numeroProntuario;
+
+    @Column(columnDefinition = "TEXT")
     private String objetivo;
-    private String restricao_alimentar;
-    private String condicoes_alimentares;
+
+    @Column(columnDefinition = "TEXT")
+    private String restricaoAlimentar;
+
+    @Column(columnDefinition = "TEXT")
+    private String informacoesClinicas;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario")
@@ -28,35 +37,28 @@ public class Prontuario implements Serializable {
     @JoinColumn(name = "id_paciente")
     private Paciente paciente;
 
-    @OneToOne(mappedBy = "prontuario")
-    private AvaliacaoFisica avaliacaoFisica;
+    @OneToMany(mappedBy = "prontuario")
+    @JsonIgnore
+    private List<AvaliacaoFisica> avaliacoesFisicas;
 
     public Prontuario(){}
 
-    public Prontuario(Long id, String numero_prontuario, String objetivo, String restricao_alimentar, String condicoes_alimentares){
+    public Prontuario(Long id, String numeroProntuario, String objetivo, String restricaoAlimentar, String informacoesClinicas){
         this.id = id;
         this.objetivo  = objetivo;
-        this.numero_prontuario = numero_prontuario;
-        this.restricao_alimentar = restricao_alimentar;
-        this.condicoes_alimentares = condicoes_alimentares;
+        this.numeroProntuario = numeroProntuario;
+        this.restricaoAlimentar = restricaoAlimentar;
+        this.informacoesClinicas = informacoesClinicas;
 
 
     }
 
-    public Long getId() {
-        return id;
+    public List<AvaliacaoFisica> getAvaliacoesFisicas() {
+        return avaliacoesFisicas;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public AvaliacaoFisica getAvaliacaoFisica() {
-        return avaliacaoFisica;
-    }
-
-    public void setAvaliacaoFisica(AvaliacaoFisica avaliacaoFisica) {
-        this.avaliacaoFisica = avaliacaoFisica;
+    public void setAvaliacoesFisicas(List<AvaliacaoFisica> avaliacoesFisicas) {
+        this.avaliacoesFisicas = avaliacoesFisicas;
     }
 
     public Paciente getPaciente() {
@@ -75,20 +77,20 @@ public class Prontuario implements Serializable {
         this.usuario = usuario;
     }
 
-    public String getCondicoes_alimentares() {
-        return condicoes_alimentares;
+    public String getRestricaoAlimentar() {
+        return restricaoAlimentar;
     }
 
-    public void setCondicoes_alimentares(String condicoes_alimentares) {
-        this.condicoes_alimentares = condicoes_alimentares;
+    public void setRestricaoAlimentar(String restricaoAlimentar) {
+        this.restricaoAlimentar = restricaoAlimentar;
     }
 
-    public String getRestricao_alimentar() {
-        return restricao_alimentar;
+    public String getInformacoesClinicas() {
+        return informacoesClinicas;
     }
 
-    public void setRestricao_alimentar(String restricao_alimentar) {
-        this.restricao_alimentar = restricao_alimentar;
+    public void setInformacoesClinicas(String informacoesClinicas) {
+        this.informacoesClinicas = informacoesClinicas;
     }
 
     public String getObjetivo() {
@@ -99,23 +101,31 @@ public class Prontuario implements Serializable {
         this.objetivo = objetivo;
     }
 
-    public String getNumero_prontuario() {
-        return numero_prontuario;
+    public String getNumeroProntuario() {
+        return numeroProntuario;
     }
 
-    public void setNumero_prontuario(String numero_prontuario) {
-        this.numero_prontuario = numero_prontuario;
+    public void setNumeroProntuario(String numeroProntuario) {
+        this.numeroProntuario = numeroProntuario;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Prontuario protuario = (Prontuario) o;
-        return Objects.equals(id, protuario.id) && Objects.equals(numero_prontuario, protuario.numero_prontuario) && Objects.equals(objetivo, protuario.objetivo) && Objects.equals(restricao_alimentar, protuario.restricao_alimentar) && Objects.equals(condicoes_alimentares, protuario.condicoes_alimentares) && Objects.equals(usuario, protuario.usuario) && Objects.equals(paciente, protuario.paciente) && Objects.equals(avaliacaoFisica, protuario.avaliacaoFisica);
+        Prontuario that = (Prontuario) o;
+        return Objects.equals(id, that.id) && Objects.equals(numeroProntuario, that.numeroProntuario) && Objects.equals(objetivo, that.objetivo) && Objects.equals(restricaoAlimentar, that.restricaoAlimentar) && Objects.equals(informacoesClinicas, that.informacoesClinicas) && Objects.equals(usuario, that.usuario) && Objects.equals(paciente, that.paciente) && Objects.equals(avaliacoesFisicas, that.avaliacoesFisicas);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, numero_prontuario, objetivo, restricao_alimentar, condicoes_alimentares, usuario, paciente, avaliacaoFisica);
+        return Objects.hash(id, numeroProntuario, objetivo, restricaoAlimentar, informacoesClinicas, usuario, paciente, avaliacoesFisicas);
     }
 }

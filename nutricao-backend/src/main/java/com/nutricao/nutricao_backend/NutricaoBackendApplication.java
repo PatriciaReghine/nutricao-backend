@@ -9,5 +9,5 @@ public class NutricaoBackendApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(NutricaoBackendApplication.class, args);
 	}
-
 }
+
