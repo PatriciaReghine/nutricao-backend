@@ -8,7 +8,6 @@ import java.util.Optional;
 
 public interface UsuarioRepositorie extends JpaRepository<Usuario, Long> {
     boolean existsByEmail(String email);
-    boolean existsByLogin(String login);
     Optional<Usuario> findByEmail(String email);
     List<Usuario> findByPerfil_NomePerfil(String nomePerfil);
 
@@ -24,5 +23,6 @@ public interface UsuarioRepositorie extends JpaRepository<Usuario, Long> {
     List<Usuario> findByPerfil_NomePerfilAndAtivoTrueOrderByNomeAsc(
             String nomePerfil
     );
+    Long countByAtivoTrue();
 
 }

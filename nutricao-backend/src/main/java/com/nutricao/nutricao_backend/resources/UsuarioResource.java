@@ -38,7 +38,7 @@ public class UsuarioResource {
         List<UsuarioResponseDTO> lista =
                 usuarioService.listarComFiltro(busca, perfil, ativo);
 
-        // 🔥 aplica ordenação + limit SEM quebrar filtro
+        //  aplica ordenação + limit SEM quebrar filtro
         if (limit != null) {
             lista = lista.stream().limit(limit).toList();
         }

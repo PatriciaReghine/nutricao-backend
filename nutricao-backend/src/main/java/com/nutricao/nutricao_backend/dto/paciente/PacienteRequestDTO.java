@@ -3,6 +3,7 @@ package com.nutricao.nutricao_backend.dto.paciente;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,18 +16,27 @@ public class PacienteRequestDTO {
     private String nome;
 
     @NotBlank(message = "CPF é obrigatório")
+    @Size(min = 11, max = 11)
     private String cpf;
+
+    @Size(max = 100)
     private String logradouro;
 
     private String email;
 
     @NotBlank(message = "Gênero é obrigatório")
     private String genero;
+
+    @Size(max = 100)
     private String bairro;
+
     private Integer numero;
+
+    @Size(min = 8, max = 8)
     private String cep;
 
     @NotBlank(message = "Telefone é obrigatório")
+    @Size(min = 11, max = 11)
     private String telefone;
 
     @NotNull(message = "Data de nascimento obrigatória")

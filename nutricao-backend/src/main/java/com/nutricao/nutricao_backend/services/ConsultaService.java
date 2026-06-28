@@ -315,9 +315,12 @@ public class ConsultaService {
                     paciente.getBairro()
             );
 
-            pacienteDTO.setCidade(
-                    paciente.getCidade().getNome()
-            );
+            if (paciente.getCidade() != null) {
+
+                pacienteDTO.setCidade(
+                        paciente.getCidade().getNome()
+                );
+            }
 
             dto.setPaciente(
                     pacienteDTO

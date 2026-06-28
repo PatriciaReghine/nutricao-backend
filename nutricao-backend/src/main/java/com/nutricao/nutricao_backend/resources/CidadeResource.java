@@ -3,14 +3,13 @@ package com.nutricao.nutricao_backend.resources;
 import com.nutricao.nutricao_backend.services.CidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController
-    @RequestMapping("/cidade")
+    @RequestMapping("/cidades")
     public class CidadeResource {
 
         @Autowired
@@ -21,5 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
             cidadeService.importarCidadesIBGE();
             return ResponseEntity.ok("Cidades importadas com sucesso!");
         }
+
+    @GetMapping
+    public List<String> listarCidades() {
+
+        return cidadeService.listarCidades();
+
+    }
     }
 

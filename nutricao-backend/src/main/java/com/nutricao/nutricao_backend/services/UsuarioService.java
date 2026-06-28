@@ -98,7 +98,6 @@ public class UsuarioService {
         usuario.setNome(dto.getNome());
         usuario.setEmail(dto.getEmail());
         usuario.setTelefone(dto.getTelefone());
-        usuario.setLogin(dto.getLogin());
         usuario.setSenhaHash(
                 passwordEncoder.encode(
                         dto.getSenha()
@@ -185,13 +184,20 @@ public class UsuarioService {
                     .orElseThrow(() -> new IllegalStateException("Perfil não encontrado"));
 
             usuario.setPerfil(perfil);
+
+            if (!"NUTRICIONISTA".equalsIgnoreCase(
+                    perfil.getNomePerfil()
+            )) {
+
+                usuario.setCrn(null);
+                usuario.setEspecialidade(null);
+            }
         }
 
         // 🔹 atualização parcial
         if (dto.getNome() != null) usuario.setNome(dto.getNome());
         if (dto.getEmail() != null) usuario.setEmail(dto.getEmail());
         if (dto.getTelefone() != null) usuario.setTelefone(dto.getTelefone());
-        if (dto.getLogin() != null) usuario.setLogin(dto.getLogin());
 
         if (dto.getSenha() != null && !dto.getSenha().isBlank()) {
 

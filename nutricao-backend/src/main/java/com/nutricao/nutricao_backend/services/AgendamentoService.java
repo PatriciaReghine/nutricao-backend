@@ -286,13 +286,11 @@ public class AgendamentoService {
                 itensMesmoHorario.stream()
                         .anyMatch(i ->
 
-                                i.getStatusConsulta() ==
-                                        StatusConsulta.AGENDADA
+                                i.getStatusConsulta() != StatusConsulta.CANCELADA
 
-                                        ||
+                                        &&
 
-                                        i.getStatusConsulta() ==
-                                                StatusConsulta.REALIZADA
+                                        i.getStatusConsulta() != StatusConsulta.AUSENTE
                         );
 
         if (horarioOcupado) {
@@ -319,6 +317,31 @@ public class AgendamentoService {
                                 "Paciente não encontrado"
                         )
                 );
+        boolean pacienteMesmoHorario =
+                itensMesmoHorario.stream()
+                        .anyMatch(agendamento ->
+
+                                agendamento.getPaciente() != null
+
+                                        &&
+
+                                        agendamento.getPaciente().getId()
+                                                .equals(paciente.getId())
+
+                                        &&
+
+                                        agendamento.getStatusConsulta() != StatusConsulta.CANCELADA
+                                        &&
+
+                                        agendamento.getStatusConsulta() != StatusConsulta.AUSENTE
+                        );
+
+        if (pacienteMesmoHorario) {
+
+            throw new RuntimeException(
+                    "Paciente já possui agendamento neste horário."
+            );
+        }
 
         // salva consulta
         item.setPaciente(paciente);

@@ -428,7 +428,20 @@ public class DashboardService {
 
                             return dto;
 
-                        }).toList();
+
+
+                        })
+                        .sorted(
+                                java.util.Comparator
+                                        .comparing(
+                                                DashboardNutricionistaResumoDTO::getTotalHoje,
+                                                java.util.Comparator.reverseOrder()
+                                        )
+                                        .thenComparing(
+                                                DashboardNutricionistaResumoDTO::getNome
+                                        )
+                        )
+                        .toList();
 
         response.setResumoNutricionistas(
                 resumo
@@ -448,7 +461,7 @@ public class DashboardService {
 
         // Estatísticas gerais
         response.setTotalUsuarios(
-                usuarioRepositorie.count()
+                usuarioRepositorie.countByAtivoTrue()
         );
 
         response.setTotalPacientes(
@@ -651,6 +664,17 @@ public class DashboardService {
                             return dto;
 
                         })
+
+                        .sorted(
+                                java.util.Comparator
+                                        .comparing(
+                                                DashboardNutricionistaResumoDTO::getTotalHoje,
+                                                java.util.Comparator.reverseOrder()
+                                        )
+                                        .thenComparing(
+                                                DashboardNutricionistaResumoDTO::getNome
+                                        )
+                        )
                         .toList();
 
         response.setResumoNutricionistas(

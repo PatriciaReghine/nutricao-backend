@@ -4,15 +4,21 @@ import com.nutricao.nutricao_backend.dto.cep.CepResponse;
 import com.nutricao.nutricao_backend.dto.IbgeCidadeResponse;
 import com.nutricao.nutricao_backend.entidades.Cidade;
 import com.nutricao.nutricao_backend.repositories.CidadeRepositorie;
+import com.nutricao.nutricao_backend.repositories.PacienteRepositorie;
 import com.nutricao.nutricao_backend.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 @Service
 public class CidadeService {
     @Autowired
     private CidadeRepositorie cidadeRepositorie;
+
+    @Autowired
+    private PacienteRepositorie pacienteRepositorie;
 
     public Cidade buscarCidadePorCep(String cep) {
 
@@ -85,5 +91,23 @@ public class CidadeService {
 
             cidadeRepositorie.save(cidade);
         }
+    }
+
+    public List<String> listarCidades() {
+
+        return pacienteRepositorie.findAll()
+
+                .stream()
+
+                .filter(paciente -> paciente.getCidade() != null)
+
+                .map(paciente -> paciente.getCidade().getNome())
+
+                .distinct()
+
+                .sorted()
+
+                .toList();
+
     }
 }
