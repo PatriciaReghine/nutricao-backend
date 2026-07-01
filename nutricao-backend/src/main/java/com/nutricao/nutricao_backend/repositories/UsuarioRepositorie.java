@@ -25,4 +25,6 @@ public interface UsuarioRepositorie extends JpaRepository<Usuario, Long> {
     );
     Long countByAtivoTrue();
 
+
+
 }

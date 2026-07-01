@@ -21,9 +21,7 @@ public class AgendamentoResource {
     @Autowired
     private AgendamentoService agendamentoService;
 
-    // ===============================
-    // 📅 LISTAR AGENDAMENTOS
-    // ===============================
+    // Listar Agendamentos
 
     @GetMapping
     public ResponseEntity<List<ConsultaAgendaDTO>> listar(
@@ -35,9 +33,7 @@ public class AgendamentoResource {
         );
     }
 
-    // ===============================
-    // 📌 AGENDAR CONSULTA
-    // ===============================
+    // Agendar Consulta
 
     @PreAuthorize(
             "hasAnyRole('ADMINISTRADOR','SECRETARIA','NUTRICIONISTA')"
@@ -55,9 +51,7 @@ public class AgendamentoResource {
         return ResponseEntity.ok("Consulta agendada com sucesso");
     }
 
-    // ===============================
-    //  CANCELAR
-    // ===============================
+    //  Cancelar Consulta
 
     @PreAuthorize(
             "hasAnyRole('ADMINISTRADOR','SECRETARIA')"
@@ -70,9 +64,8 @@ public class AgendamentoResource {
         return ResponseEntity.ok("Consulta cancelada");
     }
 
-    // ===============================
-    //  ATUALIZAR STATUS
-    // ===============================
+    //  Atualizar Status
+
         @PutMapping("/{id}/status")
     public ResponseEntity<?> atualizarStatus(
             @PathVariable Long id,

@@ -6,8 +6,11 @@ import com.nutricao.nutricao_backend.dto.paciente.PacienteResponseDTO;
 import com.nutricao.nutricao_backend.dto.prontuario.ProntuarioDTO;
 import com.nutricao.nutricao_backend.entidades.Cidade;
 import com.nutricao.nutricao_backend.entidades.Paciente;
+import com.nutricao.nutricao_backend.entidades.Usuario;
 import com.nutricao.nutricao_backend.repositories.PacienteRepositorie;
+import com.nutricao.nutricao_backend.repositories.UsuarioRepositorie;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,9 +27,11 @@ public class PacienteService {
     @Autowired
     private ProntuarioService prontuarioService;
 
-    // ===============================
-    // 🔹 LISTAR TODOS
-    // ===============================
+    @Autowired
+    private UsuarioRepositorie usuarioRepositorie;
+
+
+    //  Listar Todos
     public List<PacienteResponseDTO> findAll(Integer limit, String busca) {
 
         List<Paciente> lista;
@@ -35,11 +40,13 @@ public class PacienteService {
 
             String buscaTratada = busca.trim();
 
-            lista = pacienteRepositorie
-                    .findByNomeContainingIgnoreCaseOrCpfContainingOrderByDataCadastroDesc(buscaTratada, buscaTratada);
+            lista = pacienteRepositorie.findByNomeContainingIgnoreCaseOrCpfContainingOrderByDataCadastroDescIdDesc(
+                    buscaTratada,
+                    buscaTratada
+            );;
 
         } else {
-            lista = pacienteRepositorie.findAllByOrderByDataCadastroDesc();
+            lista = pacienteRepositorie.findAllByOrderByDataCadastroDescIdDesc();
         }
 
         if (limit != null) {
@@ -51,15 +58,17 @@ public class PacienteService {
                 .toList();
     }
 
-    // ===============================
-    // 🔹 LISTAR ÚLTIMOS 5
-    // ===============================
 
+    // Salvar
+    public PacienteResponseDTO salvar(PacienteRequestDTO dto, Authentication authentication
+    ) {
 
-    // ===============================
-    // 🔹 SALVAR
-    // ===============================
-    public PacienteResponseDTO salvar(PacienteRequestDTO dto) {
+        if (pacienteRepositorie.existsByCpf(dto.getCpf())) {
+
+            throw new IllegalStateException(
+                    "Já existe um paciente cadastrado com esse CPF."
+            );
+        }
 
         Paciente paciente = new Paciente();
 
@@ -88,15 +97,29 @@ public class PacienteService {
 
         paciente = pacienteRepositorie.save(paciente);
 
-        // 🔥 cria prontuário automático
-        prontuarioService.criarProntuario(paciente, null);
+        String email =
+                authentication.getName();
+
+        Usuario usuario =
+                usuarioRepositorie
+                        .findByEmail(email)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Usuário não encontrado."
+                                )
+                        );
+
+//  cria prontuário automático
+        prontuarioService.criarProntuario(
+                paciente,
+                usuario
+        );
 
         return toResponseDTO(paciente);
     }
 
-    // ===============================
-    // 🔹 ATUALIZAR (PUT)
-    // ===============================
+
+    // Atualizar
     public PacienteResponseDTO atualizar(Long id, PacienteRequestDTO dto) {
 
         Paciente paciente = pacienteRepositorie.findById(id)
@@ -105,6 +128,16 @@ public class PacienteService {
         // 🔹 atualização segura (não sobrescreve com null)
 
         System.out.println("ANTES: " + paciente.getNome());
+
+        if (dto.getCpf() != null
+                && !dto.getCpf().equals(paciente.getCpf())
+                && pacienteRepositorie.existsByCpf(dto.getCpf())) {
+
+            throw new IllegalStateException(
+                    "Já existe um paciente cadastrado com esse CPF."
+            );
+        }
+
             paciente.setNome(dto.getNome());
             paciente.setEmail(dto.getEmail());
             paciente.setTelefone(dto.getTelefone());
@@ -127,9 +160,6 @@ public class PacienteService {
         return toResponseDTO(paciente);
     }
 
-    // ===============================
-    // 🔁 CONVERSÃO ENTITY → DTO
-    // ===============================
     private PacienteResponseDTO toResponseDTO(Paciente paciente) {
 
         PacienteResponseDTO dto = new PacienteResponseDTO();

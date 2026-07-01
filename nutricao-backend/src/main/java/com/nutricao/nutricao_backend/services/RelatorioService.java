@@ -1,10 +1,7 @@
 package com.nutricao.nutricao_backend.services;
 
 import com.nutricao.nutricao_backend.dto.relatorios.*;
-import com.nutricao.nutricao_backend.entidades.Agenda;
-import com.nutricao.nutricao_backend.entidades.Consulta;
-import com.nutricao.nutricao_backend.entidades.Paciente;
-import com.nutricao.nutricao_backend.entidades.Usuario;
+import com.nutricao.nutricao_backend.entidades.*;
 import com.nutricao.nutricao_backend.enums.StatusAgenda;
 import com.nutricao.nutricao_backend.enums.StatusConsulta;
 import com.nutricao.nutricao_backend.enums.TipoConsulta;
@@ -35,6 +32,9 @@ public class RelatorioService {
     @Autowired
     private ProntuarioRepositorie prontuarioRepositorie;
 
+    @Autowired
+    private ItensAgendaRepositorie itensAgendaRepositorie;
+
     public RelatorioConsultaResponseDTO relatorioConsultas(
             LocalDate dataInicio,
             LocalDate dataFim,
@@ -44,54 +44,53 @@ public class RelatorioService {
             StatusConsulta statusConsulta
     ) {
 
-        List<Consulta> consultas =
-                consultaRepositorie.findAll();
+        List<ItensAgenda> consultas =
+                itensAgendaRepositorie.findAll();
 
-        // ===============================
-        // FILTRO DATA INÍCIO
-        // ===============================
+// Filtro Inicio
 
         if (dataInicio != null) {
 
             consultas = consultas.stream()
 
-                    .filter(consulta ->
-                            !consulta.getData().isBefore(dataInicio)
+                    .filter(item ->
+                            item.getAgenda() != null
+                                    &&
+                                    !item.getAgenda().getData().isBefore(dataInicio)
                     )
 
                     .toList();
         }
 
-        // ===============================
-        // FILTRO DATA FIM
-        // ===============================
+// Filtro Data Fim
 
         if (dataFim != null) {
 
             consultas = consultas.stream()
 
-                    .filter(consulta ->
-                            !consulta.getData().isAfter(dataFim)
+                    .filter(item ->
+                            item.getAgenda() != null
+                                    &&
+                                    !item.getAgenda().getData().isAfter(dataFim)
                     )
 
                     .toList();
         }
 
-        // ===============================
-        // FILTRO PACIENTE
-        // ===============================
+
+// Filtro Paciente
 
         if (pacienteId != null) {
 
             consultas = consultas.stream()
 
-                    .filter(consulta ->
+                    .filter(item ->
 
-                            consulta.getPaciente() != null
+                            item.getPaciente() != null
 
                                     &&
 
-                                    consulta.getPaciente()
+                                    item.getPaciente()
                                             .getId()
                                             .equals(pacienteId)
                     )
@@ -99,32 +98,24 @@ public class RelatorioService {
                     .toList();
         }
 
-        // ===============================
-        // FILTRO NUTRICIONISTA
-        // ===============================
+// Filtro Nutricionista
 
         if (nutricionistaId != null) {
 
             consultas = consultas.stream()
 
-                    .filter(consulta ->
+                    .filter(item ->
 
-                            consulta.getItemAgenda() != null
-
-                                    &&
-
-                                    consulta.getItemAgenda().getAgenda() != null
+                            item.getAgenda() != null
 
                                     &&
 
-                                    consulta.getItemAgenda()
-                                            .getAgenda()
+                                    item.getAgenda()
                                             .getUsuario() != null
 
                                     &&
 
-                                    consulta.getItemAgenda()
-                                            .getAgenda()
+                                    item.getAgenda()
                                             .getUsuario()
                                             .getId()
                                             .equals(nutricionistaId)
@@ -133,82 +124,95 @@ public class RelatorioService {
                     .toList();
         }
 
-        // ===============================
-        // FILTRO TIPO CONSULTA
-        // ===============================
+
+// Filtro Tipo Consulta
 
         if (tipoConsulta != null) {
 
             consultas = consultas.stream()
 
-                    .filter(consulta ->
-                            consulta.getTipoConsulta() == tipoConsulta
+                    .filter(item ->
+
+                            item.getConsulta() != null
+
+                                    &&
+
+                                    item.getConsulta()
+                                            .getTipoConsulta() == tipoConsulta
                     )
 
                     .toList();
         }
 
-        // ===============================
-        // FILTRO STATUS CONSULTA
-        // ===============================
+
+// Filtro Status
+
 
         if (statusConsulta != null) {
 
             consultas = consultas.stream()
 
-                    .filter(consulta ->
-
-                            consulta.getItemAgenda() != null
-
-                                    &&
-
-                                    consulta.getItemAgenda()
-                                            .getStatusConsulta() == statusConsulta
+                    .filter(item ->
+                            item.getStatusConsulta() == statusConsulta
                     )
 
                     .toList();
         }
 
-        // ===============================
-        // MONTA DTO
-        // ===============================
 
         List<RelatorioConsultaDTO> lista =
+
                 consultas.stream()
 
-                        .map(consulta -> {
+                        .filter(item ->
+
+                                item.getAgenda() != null
+
+                                        &&
+
+                                        item.getAgenda().getUsuario() != null
+                        )
+
+                        .map(item -> {
 
                             RelatorioConsultaDTO dto =
                                     new RelatorioConsultaDTO();
 
                             dto.setData(
-                                    consulta.getData()
+                                    item.getAgenda().getData()
                             );
 
                             dto.setHora(
-                                    consulta.getItemAgenda()
-                                            .getHorario()
+                                    item.getHorario()
                             );
 
                             dto.setPaciente(
-                                    consulta.getPaciente()
-                                            .getNome()
+
+                                    item.getPaciente() != null
+
+                                            ? item.getPaciente().getNome()
+
+                                            : null
                             );
 
                             dto.setNutricionista(
-                                    consulta.getItemAgenda()
-                                            .getAgenda()
+                                    item.getAgenda()
                                             .getUsuario()
                                             .getNome()
                             );
 
                             dto.setTipoConsulta(
-                                    consulta.getTipoConsulta()
+
+                                    item.getConsulta() != null
+
+                                            ? item.getConsulta()
+                                            .getTipoConsulta()
+
+                                            : null
                             );
 
                             dto.setStatus(
-                                    consulta.getItemAgenda()
-                                            .getStatusConsulta()
+                                    item.getStatusConsulta()
                             );
 
                             return dto;
@@ -231,9 +235,9 @@ public class RelatorioService {
 
                         .toList();
 
-        // ===============================
-        // RESPONSE
-        // ===============================
+
+// Response
+
 
         RelatorioConsultaResponseDTO response =
                 new RelatorioConsultaResponseDTO();
@@ -263,9 +267,7 @@ public class RelatorioService {
 
         final int TOTAL_HORARIOS = 20;
 
-        // ===============================
-        // FILTRO DATA INÍCIO
-        // ===============================
+        // Filtro Data Inicial
 
         if (dataInicio != null) {
 
@@ -278,9 +280,8 @@ public class RelatorioService {
                     .toList();
         }
 
-        // ===============================
-        // FILTRO DATA FIM
-        // ===============================
+
+        // Filtro Data Final
 
         if (dataFim != null) {
 
@@ -293,9 +294,7 @@ public class RelatorioService {
                     .toList();
         }
 
-        // ===============================
-        // FILTRO NUTRICIONISTA
-        // ===============================
+        // Filtro Nutricionista
 
         if (nutricionistaId != null) {
 
@@ -315,9 +314,8 @@ public class RelatorioService {
                     .toList();
         }
 
-        // ===============================
-        // FILTRO STATUS
-        // ===============================
+        // Filtro Status
+
 
         if (status != null) {
 
@@ -330,9 +328,7 @@ public class RelatorioService {
                     .toList();
         }
 
-        // ===============================
-        // MONTA DTO
-        // ===============================
+            // Montar DTO
 
         List<RelatorioAgendaDTO> lista =
 
@@ -406,9 +402,8 @@ public class RelatorioService {
 
                         .toList();
 
-        // ===============================
-        // RESPONSE
-        // ===============================
+
+        // Response
 
         RelatorioAgendaResponseDTO response =
                 new RelatorioAgendaResponseDTO();
@@ -428,16 +423,42 @@ public class RelatorioService {
     }
 
     public RelatorioUsuarioResponseDTO relatorioUsuarios(
+            LocalDate dataInicio,
+            LocalDate dataFim,
             String perfil,
-            Boolean status
+            String status
     ) {
 
         List<Usuario> usuarios =
                 usuarioRepositorie.findAll();
 
-        // ===============================
-        // FILTRO PERFIL
-        // ===============================
+        // Filtro Data Inicial
+
+        if (dataInicio != null) {
+
+            usuarios = usuarios.stream()
+
+                    .filter(usuario ->
+                            !usuario.getDataCadastro().isBefore(dataInicio)
+                    )
+
+                    .toList();
+        }
+            //Filtro Data Final
+
+        if (dataFim != null) {
+
+            usuarios = usuarios.stream()
+
+                    .filter(usuario ->
+                            !usuario.getDataCadastro().isAfter(dataFim)
+                    )
+
+                    .toList();
+        }
+
+
+        // FIltro Perfil
 
         if (perfil != null && !perfil.isBlank()) {
 
@@ -457,26 +478,23 @@ public class RelatorioService {
                     .toList();
         }
 
-        // ===============================
-        // FILTRO STATUS
-        // ===============================
 
-        if (status != null) {
+        // Filtro Status
+
+        if (status != null && !status.isBlank()) {
 
             usuarios = usuarios.stream()
 
                     .filter(usuario ->
 
-                            usuario.getAtivo()
-                                    .equals(status)
+                            status.equalsIgnoreCase("ATIVO")
+                                    ? Boolean.TRUE.equals(usuario.getAtivo())
+                                    : Boolean.FALSE.equals(usuario.getAtivo())
+
                     )
 
                     .toList();
         }
-
-        // ===============================
-        // DTO
-        // ===============================
 
         List<RelatorioUsuarioDTO> lista =
 
@@ -574,9 +592,8 @@ public class RelatorioService {
                     .toList();
         }
 
-        // ===============================
-        // DATA FIM
-        // ===============================
+
+        // Data Final
 
         if (dataFim != null) {
 
@@ -590,9 +607,8 @@ public class RelatorioService {
                     .toList();
         }
 
-        // ===============================
-        // CIDADE
-        // ===============================
+
+        // Cidade
 
         if (cidade != null && !cidade.isBlank()) {
 
@@ -612,9 +628,8 @@ public class RelatorioService {
                     .toList();
         }
 
-        // ===============================
-        // GÊNERO
-        // ===============================
+
+        // Gênero
 
         if (genero != null && !genero.isBlank()) {
 
@@ -633,8 +648,7 @@ public class RelatorioService {
                     .toList();
         }
 
-// FAIXA ETÁRIA
-// ===============================
+        //Faixa etária
 
         if (faixaEtaria != null && !faixaEtaria.isBlank()) {
 

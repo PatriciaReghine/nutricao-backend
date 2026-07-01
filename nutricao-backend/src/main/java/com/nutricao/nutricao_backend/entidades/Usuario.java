@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,6 +26,14 @@ public class Usuario implements Serializable {
     private String especialidade;
     private Boolean ativo = true;
 
+    @Column(nullable = false)
+    private LocalDate dataCadastro;
+
+    @PrePersist
+    public void prePersist() {
+        dataCadastro = LocalDate.now();
+    }
+
     public Usuario() {}
 
     @ManyToOne
@@ -40,7 +49,7 @@ public class Usuario implements Serializable {
     @JsonIgnore
     private List<Agenda> agendas;
 
-    public Usuario(Long id, String nome, String email, String telefone, String senhaHash, String crn, String especialidade, Boolean ativo) {
+    public Usuario(Long id, String nome, String email, String telefone, String senhaHash, String crn, String especialidade, Boolean ativo, LocalDate dataCadastro) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -49,6 +58,7 @@ public class Usuario implements Serializable {
         this.crn = crn;
         this.especialidade = especialidade;
         this.ativo = ativo;
+        this.dataCadastro = dataCadastro;
     }
 
     public Long getId() {
@@ -115,6 +125,14 @@ public class Usuario implements Serializable {
         this.ativo = ativo;
     }
 
+    public LocalDate getDataCadastro() {
+        return dataCadastro;
+    }
+
+    public void setDataCadastro(LocalDate dataCadastro) {
+        this.dataCadastro = dataCadastro;
+    }
+
     public Perfil getPerfil() {
         return perfil;
     }
@@ -143,12 +161,12 @@ public class Usuario implements Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Usuario usuario = (Usuario) o;
-        return Objects.equals(id, usuario.id) && Objects.equals(nome, usuario.nome) && Objects.equals(email, usuario.email) && Objects.equals(telefone, usuario.telefone) && Objects.equals(senhaHash, usuario.senhaHash) && Objects.equals(crn, usuario.crn) && Objects.equals(especialidade, usuario.especialidade) && Objects.equals(ativo, usuario.ativo) && Objects.equals(perfil, usuario.perfil) && Objects.equals(prontuarios, usuario.prontuarios) && Objects.equals(agendas, usuario.agendas);
+        return Objects.equals(id, usuario.id) && Objects.equals(nome, usuario.nome) && Objects.equals(email, usuario.email) && Objects.equals(telefone, usuario.telefone) && Objects.equals(senhaHash, usuario.senhaHash) && Objects.equals(crn, usuario.crn) && Objects.equals(especialidade, usuario.especialidade) && Objects.equals(ativo, usuario.ativo) && Objects.equals(dataCadastro, usuario.dataCadastro) && Objects.equals(perfil, usuario.perfil) && Objects.equals(prontuarios, usuario.prontuarios) && Objects.equals(agendas, usuario.agendas);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nome, email, telefone, senhaHash, crn, especialidade, ativo, perfil, prontuarios, agendas);
+        return Objects.hash(id, nome, email, telefone, senhaHash, crn, especialidade, ativo, dataCadastro, perfil, prontuarios, agendas);
     }
 }
 

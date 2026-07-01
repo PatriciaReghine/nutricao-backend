@@ -35,9 +35,6 @@ public class DashboardService {
     @Autowired
     private ProntuarioRepositorie prontuarioRepositorie;
 
-    // ==========================================
-    // MÉTODO PRINCIPAL
-    // ==========================================
     public DashboardResponseDTO buscarDashboard(
             String dataStr,
             Long pacienteId,
@@ -72,9 +69,7 @@ public class DashboardService {
         throw new RuntimeException("Perfil não autorizado");
     }
 
-    // ==========================================
-    // NUTRICIONISTA
-    // ==========================================
+    // Nutricionista
     private DashboardResponseDTO dashboardNutricionista(
             Long usuarioId,
             LocalDate data,
@@ -149,7 +144,7 @@ public class DashboardService {
         );
 
 
-        // SEM PACIENTE
+        // Sem Paciente
         if (pacienteId == null) {
 
             response.setPacienteSelecionado(null);
@@ -158,7 +153,7 @@ public class DashboardService {
             return response;
         }
 
-        // PACIENTE
+        // Paciente
         Paciente paciente = pacienteRepositorie
                 .findById(pacienteId)
                 .orElseThrow(() ->
@@ -189,7 +184,7 @@ public class DashboardService {
 
         pacienteDTO.setIdade(idade);
 
-        // PRONTUÁRIO
+        // Prontuário
         prontuarioRepositorie
                 .findByPacienteId(pacienteId)
                 .ifPresent(prontuario -> {
@@ -221,7 +216,7 @@ public class DashboardService {
 
         response.setPacienteSelecionado(pacienteDTO);
 
-        // HISTÓRICO
+        // Histórico
         List<DashboardHistoricoDTO> historico =
                 consultaRepositorie
                         .findByPacienteIdAndVisivelTrueOrderByDataDesc(pacienteId)
@@ -258,9 +253,8 @@ public class DashboardService {
         return response;
     }
 
-    // ==========================================
-    // SECRETÁRIA
-    // ==========================================
+
+    // Secretária
     private DashboardResponseDTO dashboardSecretaria(
             LocalDate data
     ) {
@@ -449,9 +443,9 @@ public class DashboardService {
 
         return response;
     }
-    // ==========================================
+
 // ADMIN
-// ==========================================
+
     private DashboardResponseDTO dashboardAdmin(
             LocalDate data
     ) {

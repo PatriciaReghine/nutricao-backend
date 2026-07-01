@@ -22,9 +22,8 @@ public class ConsultaResource {
     @Autowired
     private ConsultaService consultaService;
 
-    // ===============================
-    // 🧾 SALVAR CONSULTA (ATENDIMENTO)
-    // ===============================
+
+    // Salvar Consulta - Atendimento
 
     @PreAuthorize(
             "hasAnyRole('ADMINISTRADOR','NUTRICIONISTA')"
@@ -37,9 +36,7 @@ public class ConsultaResource {
         );
     }
 
-    // ===============================
-    // 🔍 BUSCAR DETALHE DA CONSULTA
-    // ===============================
+    // Buscar Detalhe Consulta
 
     @PreAuthorize(
             "hasAnyRole('ADMINISTRADOR','NUTRICIONISTA')"
@@ -66,6 +63,7 @@ public class ConsultaResource {
                 consultaService.atualizar(id, dto)
         );
     }
+
     @GetMapping("/ultima/{pacienteId}")
     public ResponseEntity<?> buscarUltimaConsulta(
             @PathVariable Long pacienteId

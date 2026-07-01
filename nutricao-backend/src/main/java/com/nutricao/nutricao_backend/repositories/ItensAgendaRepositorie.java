@@ -18,4 +18,10 @@ public interface ItensAgendaRepositorie extends JpaRepository<ItensAgenda,Long> 
             Long usuarioId,
             LocalDate data
     );
+
+    List<ItensAgenda> findByAgendaUsuarioIdAndAgendaDataAndHorario(
+            Long usuarioId,
+            LocalDate data,
+            LocalTime horario
+    );
 }

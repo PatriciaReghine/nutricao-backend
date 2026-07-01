@@ -32,9 +32,8 @@ public class AgendamentoService {
     @Autowired
     private UsuarioRepositorie usuarioRepositorie;
 
-    // ===============================
-    // 📅 LISTAR AGENDAMENTOS DO DIA
-    // ===============================
+    // Listar Agendas do Dia
+
     public List<ConsultaAgendaDTO> listarAgendamentosDoDia(
             Long nutricionistaId,
             String dataStr) {
@@ -194,9 +193,7 @@ public class AgendamentoService {
         }).toList();
     }
 
-// ===============================
-// 📌 AGENDAR CONSULTA
-// ===============================
+//  Agendar Consulta
     public void agendarConsulta(
             AgendarConsultaDTO dto,
             String token
@@ -208,8 +205,8 @@ public class AgendamentoService {
         Long usuarioLogadoId =
                 JwtService.getIdFromToken(token);
 
-        // 🔥 REGRA:
-        // nutricionista só agenda na própria agenda
+// Nutri só agenda em sua agenda
+
         Long nutricionistaId =
                 dto.getNutricionistaId();
 
@@ -224,7 +221,6 @@ public class AgendamentoService {
         LocalTime horario =
                 LocalTime.parse(dto.getHora());
 
-        // 🔥 variável final para usar no lambda
         final Long nutricionistaFinalId =
                 nutricionistaId;
 
@@ -244,7 +240,7 @@ public class AgendamentoService {
                                     )
                             );
 
-                    // 🔥 VALIDA SE ESTÁ ATIVA
+                    // Validação se está ativa
                     if (!usuario.getAtivo()) {
 
                         throw new RuntimeException(
@@ -351,9 +347,8 @@ public class AgendamentoService {
         itensAgendaRepositorie.save(item);
     }
 
-    // ===============================
-    // ❌ CANCELAR CONSULTA
-    // ===============================
+
+    // Cancelar Consulta
     public void cancelar(Long id) {
 
         ItensAgenda item = itensAgendaRepositorie
@@ -371,7 +366,6 @@ public class AgendamentoService {
             );
         }
 
-        // 🔥 libera horário
         item.setStatusConsulta(
                 StatusConsulta.CANCELADA
         );
@@ -379,9 +373,8 @@ public class AgendamentoService {
         itensAgendaRepositorie.save(item);
     }
 
-    // ===============================
-    // 🔄 ATUALIZAR STATUS
-    // ===============================
+
+    //Atualizar status consulta
     public void atualizarStatus(
             Long id,
             StatusConsulta status
@@ -395,8 +388,50 @@ public class AgendamentoService {
                         )
                 );
 
-        item.setStatusConsulta(status);
+        // Se o novo status ocupa horário, valida conflito
+        if (
+                status == StatusConsulta.AGENDADA
+                        || status == StatusConsulta.CONFIRMADA
+                        || status == StatusConsulta.REALIZADA
+        ) {
 
+            List<ItensAgenda> itensMesmoHorario =
+                    itensAgendaRepositorie
+                            .findByAgendaIdOrderByHorarioAsc(
+                                    item.getAgenda().getId()
+                            )
+                            .stream()
+                            .filter(i ->
+                                    i.getHorario().equals(item.getHorario())
+                            )
+                            .toList();
+
+            boolean horarioOcupado =
+                    itensMesmoHorario.stream()
+
+                            // ignora a própria consulta
+                            .filter(i -> !i.getId().equals(item.getId()))
+
+                            .anyMatch(i ->
+
+                                    i.getStatusConsulta() == StatusConsulta.AGENDADA
+                                            ||
+
+                                            i.getStatusConsulta() == StatusConsulta.CONFIRMADA
+                                            ||
+
+                                            i.getStatusConsulta() == StatusConsulta.REALIZADA
+                            );
+
+            if (horarioOcupado) {
+
+                throw new IllegalStateException(
+                        "Não é possível alterar o status desta consulta, pois já existe outra consulta ativa neste horário."
+                );
+            }
+        }
+
+        item.setStatusConsulta(status);
 
         itensAgendaRepositorie.save(item);
     }

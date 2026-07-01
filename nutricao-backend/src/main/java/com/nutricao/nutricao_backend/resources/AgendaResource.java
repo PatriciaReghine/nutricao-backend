@@ -29,15 +29,12 @@
 
 
 
-        // 📌 LISTAR AGENDAS (ABERTA / FINALIZADA)
+        // Listar Agendas (Aberta / Finalizada)
 
         @PreAuthorize(
                 "hasAnyRole('ADMINISTRADOR','SECRETARIA','NUTRICIONISTA')"
         )
         @GetMapping
-        // ===============================
-// 📋 LISTAR AGENDAS POR STATUS
-// ===============================
         public List<AgendaListResponseDTO> listarAgendas(
                 StatusAgenda status,
                 Long nutricionistaId,
@@ -111,7 +108,7 @@
             );
         }
     
-        // 📌 CRIAR AGENDA (opcional)
+        // Criar Agenda
 
         @PreAuthorize(
                 "hasAnyRole('ADMINISTRADOR','SECRETARIA','NUTRICIONISTA')"
@@ -124,7 +121,7 @@
             return ResponseEntity.ok("Agenda criada com sucesso");
         }
     
-        // 📌 ALTERAR STATUS DA AGENDA (dia inteiro)
+        // Alterar Status Agenda - Dia todo
         @PutMapping("/{id}/status")
         public ResponseEntity<?> atualizarStatusAgenda(
                 @PathVariable Long id,

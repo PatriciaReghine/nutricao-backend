@@ -28,9 +28,8 @@ public class AgendaService {
     @Autowired
     private UsuarioRepositorie usuarioRepositorie;
 
-    // ===============================
-    // 📌 CRIAR AGENDA (ABRIR DIA)
-    // ===============================
+    // Criar/ abrir agenda do dia
+
     public void criarAgenda(AgendaCreateDTO dto) {
 
         LocalDate data = LocalDate.parse(dto.getData());
@@ -66,9 +65,8 @@ public class AgendaService {
         agendaRepositorie.save(agenda);
     }
 
-    // ===============================
-// 📋 LISTAR AGENDAS POR STATUS
-// ===============================
+// Listar Agendas por status
+
     public List<AgendaListResponseDTO> listarAgendas(
             StatusAgenda status,
             Long nutricionistaId,
@@ -133,9 +131,8 @@ public class AgendaService {
         }).toList();
     }
 
-    // ===============================
-    // 🔄 ALTERAR STATUS DA AGENDA
-    // ===============================
+    //  Mudança Status Agenda
+
     public void atualizarStatusAgenda(
             Long id,
             StatusAgenda status
@@ -154,9 +151,9 @@ public class AgendaService {
         agendaRepositorie.save(agenda);
     }
 
-    // ===============================
-    // 📅 BUSCAR AGENDA DO DIA
-    // ===============================
+
+    // Buscar Agenda do dia
+
     public AgendaDiaResponseDTO buscarAgendaDoDia(
             String dataStr,
             Long nutricionistaId

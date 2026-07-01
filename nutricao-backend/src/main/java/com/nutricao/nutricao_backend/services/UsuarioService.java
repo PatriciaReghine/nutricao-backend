@@ -56,7 +56,7 @@ public class UsuarioService {
         }
     }
 
-    // 🔹 LISTAR USUÁRIOS
+    // Listar Usuários
     public List<UsuarioResponseDTO> findAllUsuario() {
         return usuarioRepositorie.findAll().stream().map(usuario ->
                 new UsuarioResponseDTO(
@@ -72,7 +72,7 @@ public class UsuarioService {
         ).toList();
     }
 
-    // 🔹 BUSCAR POR ID
+    // Buscar Por id
     public UsuarioResponseDTO buscarPeloId(Long id) {
 
         Usuario usuario = usuarioRepositorie.findById(id)
@@ -90,8 +90,16 @@ public class UsuarioService {
         );
     }
 
-    // 🔹 SALVAR USUÁRIO
+    // Salvar Usuário
     public UsuarioResponseDTO salvar(UsuarioRequestDTO dto) {
+
+        // Email Duplicado
+        if (usuarioRepositorie.existsByEmail(dto.getEmail())) {
+
+            throw new RuntimeException(
+                    "Já existe um usuário cadastrado com este e-mail."
+            );
+        }
 
         Usuario usuario = new Usuario();
 
@@ -112,7 +120,6 @@ public class UsuarioService {
 
             usuario.setPerfil(perfil);
 
-            // 🔥 REGRA DE NEGÓCIO
             if (usuario.getPerfil() != null &&
                     "NUTRICIONISTA".equalsIgnoreCase(usuario.getPerfil().getNomePerfil())) {
 
@@ -134,7 +141,7 @@ public class UsuarioService {
         return mapToDTO(usuario);
     }
 
-    // 🔹 LOGIN
+    // Login
     public String autenticar(String email, String senha) {
 
         Optional<Usuario> usuarioOpt = usuarioRepositorie.findByEmail(email);
@@ -160,7 +167,7 @@ public class UsuarioService {
         return null;
     }
 
-    // 🔹 ATUALIZAR POR ID (COM REGRA DE ADMIN)
+    // Atualizar com ID ( ADMIN)
     public UsuarioResponseDTO atualizar(Long id, UsuarioRequestDTO dto, String token) {
 
         Long idLogado = JwtService.getIdFromToken(token);
@@ -171,7 +178,7 @@ public class UsuarioService {
         Usuario usuario = usuarioRepositorie.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        // 🔒 REGRA: só admin pode alterar perfil
+
         if (dto.getPerfilId() != null) {
 
             if (usuarioLogado.getPerfil() == null ||
@@ -194,10 +201,23 @@ public class UsuarioService {
             }
         }
 
-        // 🔹 atualização parcial
         if (dto.getNome() != null) usuario.setNome(dto.getNome());
-        if (dto.getEmail() != null) usuario.setEmail(dto.getEmail());
-        if (dto.getTelefone() != null) usuario.setTelefone(dto.getTelefone());
+        if (dto.getNome() != null) {
+            usuario.setNome(dto.getNome());
+        }
+
+        if (dto.getEmail() != null) {
+
+            if (!dto.getEmail().equalsIgnoreCase(usuario.getEmail())
+                    && usuarioRepositorie.existsByEmail(dto.getEmail())) {
+
+                throw new RuntimeException(
+                        "Já existe um usuário cadastrado com este e-mail."
+                );
+            }
+
+            usuario.setEmail(dto.getEmail());
+        }        if (dto.getTelefone() != null) usuario.setTelefone(dto.getTelefone());
 
         if (dto.getSenha() != null && !dto.getSenha().isBlank()) {
 
@@ -215,7 +235,7 @@ public class UsuarioService {
         return mapToDTO(usuario);
     }
 
-    // 🔹 ATUALIZAR USUÁRIO LOGADO (/me)
+    // Atualizar Logado (me)
     public UsuarioResponseDTO atualizarMe(String token, UsuarioUpdateMeDTO dto) {
 
         Long id = JwtService.getIdFromToken(token);
@@ -224,8 +244,22 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
         if (dto.getNome() != null) usuario.setNome(dto.getNome());
-        if (dto.getEmail() != null) usuario.setEmail(dto.getEmail());
-        if (dto.getTelefone() != null) usuario.setTelefone(dto.getTelefone());
+        if (dto.getNome() != null) {
+            usuario.setNome(dto.getNome());
+        }
+
+        if (dto.getEmail() != null) {
+
+            if (!dto.getEmail().equalsIgnoreCase(usuario.getEmail())
+                    && usuarioRepositorie.existsByEmail(dto.getEmail())) {
+
+                throw new RuntimeException(
+                        "Já existe um usuário cadastrado com este e-mail."
+                );
+            }
+
+            usuario.setEmail(dto.getEmail());
+        }        if (dto.getTelefone() != null) usuario.setTelefone(dto.getTelefone());
 
         if (dto.getSenha() != null && !dto.getSenha().isBlank()) {
 
@@ -244,16 +278,15 @@ public class UsuarioService {
         return mapToDTO(usuario);
     }
 
-    // 🔹 BLOQUEAR / DESBLOQUEAR
+    //Bloquear / Desbloquear
     public void alterarStatus(Long id, Boolean ativo, String token) {
 
-        // 🔹 pega usuário logado
         Long idLogado = JwtService.getIdFromToken(token);
 
         Usuario usuarioLogado = usuarioRepositorie.findById(idLogado)
                 .orElseThrow(() -> new RuntimeException("Usuário logado não encontrado"));
 
-        // 🔒 valida admin
+
         if (usuarioLogado.getPerfil() == null ||
                 !usuarioLogado.getPerfil().getNomePerfil().equalsIgnoreCase("ADMINISTRADOR")) {
 
@@ -269,7 +302,7 @@ public class UsuarioService {
         usuarioRepositorie.save(usuario);
     }
 
-    // 🔹 LISTAR NUTRICIONISTAS
+    // Listar Nutricionistas
     public List<NutricionistaResponseDTO> listarNutricionistas() {
 
         return usuarioRepositorie
@@ -284,12 +317,11 @@ public class UsuarioService {
                 ).toList();
     }
 
-    // 🔹 BUSCAR EMAIL
+    // Buscar Email
     public Optional<Usuario> buscarPorEmail(String email) {
         return usuarioRepositorie.findByEmail(email);
     }
 
-    // 🔹 CONVERSOR PADRÃO (evita repetição)
     private UsuarioResponseDTO mapToDTO(Usuario usuario) {
         return new UsuarioResponseDTO(
                 usuario.getId(),
@@ -307,7 +339,7 @@ public class UsuarioService {
 
         List<Usuario> lista = usuarioRepositorie.findAllByOrderByIdDesc();
 
-        // 🔍 FILTRO DE BUSCA
+        // Filtro Busca
         if (busca != null && !busca.isEmpty()) {
             lista = lista.stream()
                     .filter(u -> u.getNome().toLowerCase().contains(busca.toLowerCase())
@@ -315,7 +347,7 @@ public class UsuarioService {
                     .toList();
         }
 
-        // 🔍 FILTRO DE PERFIL
+        // Filtro Perfil
         if (perfil != null && !perfil.isEmpty()) {
             lista = lista.stream()
                     .filter(u -> u.getPerfil() != null &&
@@ -323,7 +355,7 @@ public class UsuarioService {
                     .toList();
         }
 
-        // 🔍 FILTRO DE STATUS
+        // Filtro Status
         if (ativo != null) {
             lista = lista.stream()
                     .filter(u -> u.getAtivo() != null && u.getAtivo().equals(ativo))
@@ -337,6 +369,15 @@ public class UsuarioService {
     public List<UsuarioResponseDTO> listarUltimos(Integer limit) {
 
         List<Usuario> lista = usuarioRepositorie.findAllByOrderByIdDesc();
+
+        System.out.println("=== ORDEM DO BANCO ===");
+
+        lista.forEach(u ->
+                System.out.println(
+                        u.getId() + " - " + u.getNome()
+                )
+        );
+
 
         if (limit != null) {
             lista = lista.stream().limit(limit).toList();

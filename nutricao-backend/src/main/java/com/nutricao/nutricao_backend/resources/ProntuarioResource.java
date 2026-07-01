@@ -21,7 +21,7 @@ public class ProntuarioResource {
     private ProntuarioService prontuarioService;
 
 
-    // 🔹 BUSCAR POR PACIENTE (usado na sua tela)
+    // Buscar por paciente
     @GetMapping("/paciente/{idPaciente}")
     public ResponseEntity<ProntuarioResponseDTO> buscarPorPaciente(@PathVariable Long idPaciente) {
         return ResponseEntity.ok(prontuarioService.buscarPorPaciente(idPaciente));

@@ -16,17 +16,16 @@ public class JwtService {
     private static final String SECRET_KEY = "12345678901234567890123456789012"; // mínimo 32 chars
     private static final long EXPIRATION = 1000 * 60 * 60; // 1 hora
 
-    // 🔐 GERA CHAVE SEGURA
+    // Cria chave
     private static Key getKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
-    // 🚀 GERAR TOKEN COM ID + PERFIL
+    // Token com ID
     public static String gerarToken(Usuario usuario) {
 
         Map<String, Object> claims = new HashMap<>();
 
-        // 🔥 adiciona dados no token
         claims.put("perfil", usuario.getPerfil().getNomePerfil());
         claims.put("id", usuario.getId());
 
@@ -39,7 +38,7 @@ public class JwtService {
                 .compact();
     }
 
-    // 🔍 VALIDAR TOKEN
+    // Validar Token
     public static boolean validarToken(String token) {
         try {
             getClaims(token);
@@ -49,17 +48,14 @@ public class JwtService {
         }
     }
 
-    // 📧 EXTRAIR EMAIL
     public static String getEmail(String token) {
         return getClaims(token).getSubject();
     }
 
-    // 🔐 EXTRAIR PERFIL
     public static String getPerfil(String token) {
         return getClaims(token).get("perfil", String.class);
     }
 
-    // 🆔 EXTRAIR ID
     public static Long getIdFromToken(String token) {
         return ((Number) getClaims(token).get("id")).longValue();
     }

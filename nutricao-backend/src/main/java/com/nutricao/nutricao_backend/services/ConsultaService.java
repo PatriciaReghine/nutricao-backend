@@ -36,9 +36,9 @@ public class ConsultaService {
     @Autowired
     private ProntuarioRepositorie prontuarioRepositorie;
 
-    // ===============================
-    // 🧾 SALVAR CONSULTA (ATENDIMENTO)
-    // ===============================
+
+    // 🧾 Salvar Consulta - Atendimento
+
     public ConsultaResponseDTO salvar(ConsultaRequestDTO dto) {
 
         // 🔹 busca item da agenda
@@ -102,7 +102,7 @@ public class ConsultaService {
                 dto.getAvaliacao().getImc()
         );
 
-        // 🔹 busca prontuário do paciente
+        // busca prontuário do paciente
         Prontuario prontuario =
                 prontuarioRepositorie
                         .findByPacienteId(
@@ -117,7 +117,7 @@ public class ConsultaService {
         avaliacao = avaliacaoFisicaRepositorie
                 .save(avaliacao);
 
-        // 🔹 criar consulta
+        // criar consulta
         Consulta consulta = new Consulta();
 
         consulta.setPaciente(paciente);
@@ -148,7 +148,7 @@ public class ConsultaService {
         Consulta consultaSalva =
                 consultaRepositorie.save(consulta);
 
-        // 🔹 atualiza status do agendamento
+        // atualiza status do agendamento
         item.setStatusConsulta(StatusConsulta.REALIZADA);
 
         itensAgendaRepositorie.save(item);
@@ -156,10 +156,7 @@ public class ConsultaService {
         return toDTO(consultaSalva);
     }
 
-    // ===============================
-    // ===============================
-// 🔍 BUSCAR CONSULTA POR ID
-// ===============================
+//  Buscar Consulta por Id
     public ConsultaResponseDTO buscarPorId(Long id) {
 
         Consulta consulta = consultaRepositorie.findById(id)
@@ -172,9 +169,7 @@ public class ConsultaService {
         return toDTO(consulta);
     }
 
-    // ===============================
-// 🔄 MAPPER (COM IMC)
-// ===============================
+//  Mapper com IMC
     private ConsultaResponseDTO toDTO(Consulta consulta) {
 
         ConsultaResponseDTO dto =
@@ -234,7 +229,7 @@ public class ConsultaService {
                 avaliacao.getImc()
         );
 
-        // 🔹 NUTRICIONISTA
+        //Nutricionista
         Usuario nutricionista =
                 consulta.getItemAgenda()
                         .getAgenda()
@@ -408,7 +403,7 @@ public class ConsultaService {
 
     }
 
-    //    BUSCAR ULTIMA CONSULTA
+    //    Buscar Ultima consulta
 
     public ConsultaResponseDTO buscarUltimaConsulta(
             Long pacienteId

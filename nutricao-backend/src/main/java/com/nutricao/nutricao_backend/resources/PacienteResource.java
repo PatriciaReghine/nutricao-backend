@@ -19,8 +19,6 @@ public class PacienteResource {
     @Autowired
     PacienteService pacienteService;
 
-    // 🔹 POST
-
     @PreAuthorize(
             "hasAnyRole('ADMINISTRADOR','SECRETARIA','NUTRICIONISTA')"
     )
@@ -32,11 +30,9 @@ public class PacienteResource {
 
         System.out.println("AUTH NO CONTROLLER: " + authentication);
 
-        PacienteResponseDTO novo = pacienteService.salvar(dto);
+        PacienteResponseDTO novo = pacienteService.salvar(dto,authentication);
         return ResponseEntity.ok(novo);
     }
-
-    // 🔹 GET
 
     @PreAuthorize(
             "hasAnyRole('ADMINISTRADOR','SECRETARIA','NUTRICIONISTA')"
@@ -49,6 +45,7 @@ public class PacienteResource {
         List<PacienteResponseDTO> lista = pacienteService.findAll(limit, busca);
         return ResponseEntity.ok(lista);
     }
+
 
     @PreAuthorize(
             "hasAnyRole('ADMINISTRADOR','SECRETARIA','NUTRICIONISTA')"

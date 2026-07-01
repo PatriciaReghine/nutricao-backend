@@ -89,11 +89,17 @@ public class RelatorioResource {
             String perfil,
 
             @RequestParam(required = false)
-            Boolean status
+            String status,
+
+            @RequestParam(required = false) LocalDate dataInicio,
+
+            @RequestParam(required = false) LocalDate dataFim
 
     ) {
 
         return relatorioService.relatorioUsuarios(
+                dataInicio,
+                dataFim,
                 perfil,
                 status
         );

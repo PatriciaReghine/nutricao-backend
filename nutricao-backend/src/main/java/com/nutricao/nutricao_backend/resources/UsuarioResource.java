@@ -24,7 +24,7 @@ public class UsuarioResource {
     @Autowired
     UsuarioService usuarioService;
 
-    // 🔹 GET - LISTAR (COM FILTRO + LIMIT)
+    // Listar com Filtros
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping
@@ -38,7 +38,6 @@ public class UsuarioResource {
         List<UsuarioResponseDTO> lista =
                 usuarioService.listarComFiltro(busca, perfil, ativo);
 
-        //  aplica ordenação + limit SEM quebrar filtro
         if (limit != null) {
             lista = lista.stream().limit(limit).toList();
         }
@@ -46,7 +45,7 @@ public class UsuarioResource {
         return ResponseEntity.ok(lista);
     }
 
-    // 🔹 GET - BUSCAR POR ID
+    // Buscar por ID
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping("/{id}")
@@ -57,7 +56,6 @@ public class UsuarioResource {
         return ResponseEntity.ok(usuario);
     }
 
-    // 🔹 POST - SALVAR
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PostMapping
     public ResponseEntity<UsuarioResponseDTO> salvar(@RequestBody @Valid UsuarioRequestDTO dto){
@@ -67,7 +65,7 @@ public class UsuarioResource {
         return ResponseEntity.ok(usuario);
     }
 
-    // 🔹 LOGIN
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginDTO login) {
 
@@ -109,7 +107,6 @@ public class UsuarioResource {
         }
     }
 
-    // 🔹 PUT - ATUALIZAR USUÁRIO
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioResponseDTO> atualizar(
             @PathVariable Long id,
@@ -123,7 +120,7 @@ public class UsuarioResource {
         return ResponseEntity.ok(usuario);
     }
 
-    // 🔹 BLOQUEAR / DESBLOQUEAR
+    // Bloquear/Desbloquear
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PutMapping("/{id}/status")
@@ -139,7 +136,6 @@ public class UsuarioResource {
         return ResponseEntity.ok("Status atualizado");
     }
 
-    // 🔹 ATUALIZAR USUÁRIO LOGADO
     @PutMapping("/me")
     public ResponseEntity<UsuarioResponseDTO> atualizarMe(
             @RequestHeader("Authorization") String token,

@@ -22,7 +22,7 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    // 🔥 REGISTRA O FILTRO COMO BEAN
+    // Registro de Filtro com Bean
     @Bean
     public JwtFilter jwtFilter() {
         return new JwtFilter();
@@ -62,7 +62,6 @@ public class SecurityConfig {
 
                 )
 
-                // 🔥 USA O BEAN (AQUI MUDA TUDO)
                 .addFilterBefore(jwtFilter(),
                         UsernamePasswordAuthenticationFilter.class)
 

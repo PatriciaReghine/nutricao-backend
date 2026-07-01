@@ -15,9 +15,8 @@ public class ProntuarioService {
     @Autowired
     private ProntuarioRepositorie prontuarioRepositorie;
 
-    // ===============================
-    //  CRIAR PRONTUÁRIO AUTOMÁTICO
-    // ===============================
+
+    //  Prontuário Automático
     public Prontuario criarProntuario(Paciente paciente, Usuario usuario) {
 
         Prontuario prontuario = new Prontuario();
@@ -28,10 +27,8 @@ public class ProntuarioService {
 
         return prontuarioRepositorie.save(prontuario);
     }
+    //Atualizar Prontuário
 
-    // ===============================
-    //  ATUALIZAR PRONTUÁRIO (EDIÇÃO)
-    // ===============================
     public Prontuario atualizar(Long id, ProntuarioRequestDTO dto) {
 
         Prontuario prontuario = prontuarioRepositorie.findById(id)
@@ -44,9 +41,8 @@ public class ProntuarioService {
         return prontuarioRepositorie.save(prontuario);
     }
 
-    // ===============================
-    //  BUSCAR PRONTUÁRIO POR ID
-    // ===============================
+
+    //Buscar Prontuário por ID
     public ProntuarioResponseDTO buscarPorId(Long id) {
 
         Prontuario prontuario = prontuarioRepositorie.findById(id)
@@ -55,9 +51,6 @@ public class ProntuarioService {
         return toDTO(prontuario);
     }
 
-    // ===============================
-    // BUSCAR PRONTUÁRIO PELO PACIENTE
-    // ===============================
     public ProntuarioResponseDTO buscarPorPaciente(Long idPaciente) {
 
         Prontuario prontuario = prontuarioRepositorie.findByPacienteId(idPaciente)
@@ -66,17 +59,14 @@ public class ProntuarioService {
         return toDTO(prontuario);
     }
 
-    // ===============================
-    //  GERAR NÚMERO DO PRONTUÁRIO
-    // ===============================
+
+    // Gerar Número Prontuário
     private String gerarNumero() {
         long count = prontuarioRepositorie.count() + 1;
         return String.format("%05d", count);
     }
 
-    // ===============================
-    // 🔄 MAPPER ENTITY → DTO
-    // ===============================
+
     private ProntuarioResponseDTO toDTO(Prontuario prontuario) {
 
         ProntuarioResponseDTO dto = new ProntuarioResponseDTO();
